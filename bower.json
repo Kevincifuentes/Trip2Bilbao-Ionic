@@ -1,0 +1,28 @@
+{
+  "name": "BluSecur",
+  "private": true,
+  "devDependencies": {
+    "ionic": "1.2.4"
+  },
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "www/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-translate": "~2.8.1",
+    "angular-translate-loader-static-files": "~2.8.1",
+    "angular-i18n": "~1.4.8",
+    "ngCordova": "~0.1.17-alpha"
+  }
+}

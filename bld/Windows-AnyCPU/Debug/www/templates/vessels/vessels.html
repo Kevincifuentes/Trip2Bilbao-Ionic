@@ -1,0 +1,17 @@
+﻿<ion-view view-title="{{ 'VESSELS' | translate }}">
+    <ion-nav-buttons side="right">
+        <a style="color: black;" class="button button-icon icon ion-ios-plus-empty" ng-click="addVessel()"></a>
+    </ion-nav-buttons>
+    <ion-content scroll="true">
+        <div class="list layouts-functionalities">
+            <a class="item item-icon-left item-icon-right" ng-repeat="v in vessels" ng-click="getVesselInfo(v)">
+                <i class="icon ion-android-boat"></i>
+                <div>
+                    <span class="title">{{ v.name }}</span>
+                    <p class="description">{{ 'STATUS' | translate }}: {{ v.statusName}}</p>
+                </div>
+                <i class="icon ion-arrow-right-c"></i>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

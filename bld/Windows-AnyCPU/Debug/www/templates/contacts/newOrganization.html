@@ -1,0 +1,28 @@
+﻿<ion-view view-title="{{ 'NEW_ORGANIZATION' | translate }}">  
+    <ion-nav-buttons side="right">
+        <a style="color: black;" class="button button-icon icon ion-ios-arrow-thin-left" ng-click="cancel()"></a>
+    </ion-nav-buttons>
+    <ion-content class="padding" scroll="false">
+        <form name="newOrganizationForm" ng-controller="ContactCtrl" novalidate>
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <input type="text" placeholder="{{ 'CIF' | translate }}" ng-model="org.cif" name="cif" required>
+                </label><label class="item item-input">
+                    <input type="text" placeholder="{{ 'NAME' | translate }}" ng-model="org.name" name="name" required>
+                </label>
+                <div class="item item-input item-select">
+                    <div class="input-label">
+                        &nbsp;
+                    </div>
+                    <select name="country"
+                            ng-options="country.code as country.name for country in countries"
+                            ng-model="org.country" required>
+
+                        <option value="" disabled selected style="display:none;">{{ 'COUNTRY' | translate }}</option>
+                    </select>
+                </div>
+            </div>
+            <button class="button button-block button-positive" ng-click="saveOrganization(newOrganizationForm)" ng-disabled="newOrganizationForm.$invalid">{{ 'SAVE' | translate }}</button>
+        </form>
+    </ion-content>
+</ion-view>

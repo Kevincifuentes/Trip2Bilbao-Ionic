@@ -1,0 +1,20 @@
+﻿<ion-view view-title="{{ 'CONTACTS' | translate }}">
+    <!--<ion-nav-buttons side="right">
+        <a style="color: black;" class="button button-icon icon ion-android-person-add" ng-click="addPersonContact()"></a>
+    </ion-nav-buttons>-->
+    
+  <!--<ion-content>-->      
+      <ion-tabs class="tabs-top tabs-icon-top ">
+
+          <ion-tab title="{{ 'PERSONS' | translate }}" icon-on="ion-ios-person" icon-off="ion-ios-person-outline" href="#/menu/contacts/persons">
+              <ion-nav-view name="tab-persons"></ion-nav-view>
+          </ion-tab>
+
+          <ion-tab title="{{ 'ORGANIZATIONS' | translate }}" icon-on="ion-ios-people" icon-off="ion-ios-people-outline" href="#/menu/contacts/organizations">
+              <ion-nav-view name="tab-organizations"></ion-nav-view>      
+          </ion-tab>
+
+      </ion-tabs>
+
+<!--</ion-content>-->
+</ion-view>

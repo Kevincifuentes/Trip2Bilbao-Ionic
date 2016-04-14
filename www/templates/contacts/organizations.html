@@ -1,0 +1,27 @@
+﻿<ion-view view-title="{{ 'CONTACTS' | translate }}">   
+    <ion-nav-buttons side="right">
+        <a style="color: black;" class="button button-icon icon ion-ios-plus-empty" ng-click="addOrganizationContact()"></a>
+    </ion-nav-buttons>
+    <ion-content>
+
+        <!--<div class="list miscellaneous-functionalities">
+            <a class="item item-icon-right" ng-repeat="o in organizations" ng-click="getOrganizationInfo(o)">
+                {{ o.name }}
+
+                <i class="icon ion-ios-arrow-thin-right"></i>
+            </a>
+        </div>-->
+
+        <div class="list layouts-functionalities">
+            <a class="item item-icon-left item-icon-right" ng-repeat="o in organizations" ng-click="getOrganizationInfo(o)">
+                <i class="icon ion-briefcase"></i>
+                <div>
+                    <span class="title">{{ o.name }}</span>
+                    <p class="description">{{ 'COUNTRY' | translate }}: {{ o.countryName }}</p>
+                </div>
+                <i class="icon ion-arrow-right-c"></i>
+            </a>
+        </div>
+
+    </ion-content>
+</ion-view>

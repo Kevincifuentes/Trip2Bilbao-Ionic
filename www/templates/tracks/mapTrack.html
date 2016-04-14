@@ -1,0 +1,36 @@
+﻿<ion-view view-title="Mapa">
+    <ion-nav-buttons side="right">
+        <a style="color: black;" class="button button-icon icon ion-search" ng-click="busqueda.show()"></a>
+        <!--<a style="color: black;" class="button button-icon icon ion-ios-trash-outline" ng-click="deleteCrew()"></a>-->
+    </ion-nav-buttons>
+    <ion-content scroll="false" data-tap-disabled="false">
+        <!--<div id="map" style="height:100%; width:100%" data-tap-disabled="true"></div>-->
+        <!--<ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>-->
+        <div id="map_canvas">
+            <div id="googleMap" style="width:100%;height:100%;" name="googleMap"></div>
+        </div>
+    </ion-content>
+</ion-view>
+<script id="busqueda.html" type="text/ng-template">
+    <div class="modal">
+        <header class="bar bar-header bar-positive">
+            <h1 class="title">Buscar ruta</h1>
+            <div class="button button-clear" ng-click="busqueda.hide()"><span class="icon ion-close"></span></div>
+        </header>
+        <content has-header="true" padding="true">
+            <br />
+            <br />
+            <br />
+            <div class="card">
+                <div class="item item-text-wrap">
+                    Introduce direcciones de origen y destino:
+                </div>
+            </div>
+            <div class="input-group"><ion-google-place placeholder="Origen..." ng-model="origen" location-changed="prueba"></ion-google-place><br /><ion-google-place placeholder="Destino..." ng-model="destino" location-changed="prueba"></ion-google-place></div>
+            <br />
+            <span class="input-group-btn">
+                <button id="btnBuscar" class="button icon-right ion-search button-positive" type="button" ng-click="buscarRuta(origen, destino)">Buscar</button>
+            </span>
+        </content>
+    </div>
+</script>

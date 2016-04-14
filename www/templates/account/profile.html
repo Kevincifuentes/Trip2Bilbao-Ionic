@@ -1,0 +1,102 @@
+﻿<ion-view class="profile-view" view-title="{{ 'PROFILE' | translate }}">
+    <ion-nav-title>
+        <span>{{ 'PROFILE' | translate }}</span>
+    </ion-nav-title>
+    <ion-content scroll="false">
+        <div class="top-content row">
+            <div class="profile-container">
+                <div class="user-image-container">
+                    <pre-img ratio="_1_1" helper-class="rounded-image">
+                        <img class="user-image" ng-src="https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg" spinner-on-load>
+                    </pre-img>
+                </div>
+                <a class="user-name" ng-click="manageiAd()">{{ account.name }} {{ account.lastname }} <i class="icon ion-ios-compose" style="color:#004EFF" href="#"></i></a>                    
+                <div class="user-twitter">{{ account.email }}</div>
+            </div>
+            <div class="user-background-image-outer">
+                <div multi-bg="['https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg']"></div>
+            </div>
+        </div>
+        <div class="bottom-content">
+            <div class="list card">
+
+                <span class="item item-icon-left">
+                    <i class="icon ion-android-people"></i>
+                    {{ 'CONTACTS2' | translate }}: {{ account.contacts.length }}
+                </span>
+
+                <span class="item item-icon-left">
+                    <i class="icon ion-network"></i>
+                    {{ 'ORGANIZATIONS' | translate }}: {{ account.organizations.length }}
+                </span>
+
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
+
+<script id="update-password-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar align-title="left" class="bar-positive">
+            <h1 class="title">{{ 'UPDATE_PASSWORD_MODAL_TITLE' | translate }}</h1>
+            <div class="buttons">
+                <button class="button button-icon icon ion-ios-close-empty" ng-click="closeUpdatePasswordModal()"></button>
+            </div>
+        </ion-header-bar>
+        <ion-content class="padding">
+            <form name="updatePasswordForm" novalidate>
+                <!--<div class="item item-divider">
+                    {{ 'OLD_PASSWORD' | translate }}
+                </div>
+                <label class="item item-input">
+                    <input type="password" placeholder="{{ 'PASSWORD' | translate }}" ng-model="passData.password1" name="oldPassword" required>
+                </label>-->
+                <div class="item item-divider">
+                    {{ 'NEW_PASSWORD' | translate }}
+                </div>
+                <label class="item item-input">
+                    <input type="password" placeholder="{{ 'PASSWORD' | translate }}" ng-model="passData.password1" name="newPassword1" required>
+                </label>
+                <label class="item item-input">
+                    <input type="password" placeholder="{{ 'REPEAT_PASSWORD' | translate }}" ng-model="passData.password2" name="newPassword2" required>
+                </label>
+                <label style="color:red" ng-if="passData.password1 != passData.password2">{{ 'PASSWORDS_DIFFERENT' | translate }}</label>
+                <button class="button button-block button-positive" ng-click="updatePassword()" ng-disabled="updatePasswordForm.$invalid || passData.password1 != passData.password2">{{ 'UPDATE' | translate }}</button>
+            </form>
+        </ion-content>
+    </ion-modal-view>
+</script>
+
+<script id="update-profile-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar align-title="left" class="bar-positive">
+            <h1 class="title">{{ 'UPDATE_PROFILE_MODAL_TITLE' | translate }}</h1>
+            <div class="buttons">
+                <button class="button button-icon icon ion-ios-close-empty" ng-click="closeUpdateProfileModal()"></button>
+            </div>
+        </ion-header-bar>
+        <ion-content class="padding">
+            <form name="updateProfileForm" novalidate>
+                <div class="item item-divider">
+                    {{ 'NAME' | translate }}
+                </div>
+                <label class="item item-input">
+                    <input type="text" placeholder="{{ 'NAME' | translate }}" ng-model="account.name" name="name" required>
+                </label>
+                <div class="item item-divider">
+                    {{ 'LASTNAME' | translate }}
+                </div>
+                <label class="item item-input">
+                    <input type="text" placeholder="{{ 'LASTNAME' | translate }}" ng-model="account.lastname" name="lastname" required>
+                </label>
+                <div class="item item-divider">
+                    {{ 'EMAIL' | translate }}
+                </div>
+                <label class="item item-input">
+                    <input type="email" placeholder="{{ 'EMAIL' | translate }}" ng-model="account.email" name="email" required>
+                </label>
+                <button class="button button-block button-positive" ng-click="updateProfile()" ng-disabled="updateProfileForm.$invalid">{{ 'UPDATE' | translate }}</button>
+            </form>
+        </ion-content>
+    </ion-modal-view>
+</script>

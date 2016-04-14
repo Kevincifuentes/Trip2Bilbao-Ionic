@@ -1,0 +1,19 @@
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
+
+node_modules/
+platforms/
+plugins/
+
+bld/Android/Debug/changeList.json
+*.apk
+bin/Android/Debug/manifest-merger-debug-report.txt
+BluSecur.jsproj.user
+*.suo
+*.suo
+*.user
+.vs/BluSecur/v14/.suo
+*.user
+*.user
+config.xml
+*.suo

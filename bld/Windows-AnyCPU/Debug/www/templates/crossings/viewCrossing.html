@@ -1,0 +1,40 @@
+﻿<ion-view view-title="{{ 'CROSSING_INFO' | translate }}">
+    <ion-nav-buttons side="right">
+        <a style="color: black;" class="button button-icon icon ion-map" ng-click="getTrackInfo(selectedCrossing)"></a>
+        <!--<a style="color: black;" class="button button-icon icon ion-ios-trash-outline" ng-click="deleteCrew()"></a>-->
+    </ion-nav-buttons>
+    <ion-content>
+        <form name="viewCrossingForm">
+            <div class="item item-divider">
+                {{ 'NAME' | translate }}
+            </div>
+            <label class="item">
+                {{ selectedCrossing.name }}
+            </label>  
+            <div class="item item-divider">
+                {{ 'VESSEL_INFO' | translate }}
+            </div>
+            <label class="item">
+                <!--<font size="2">{{ 'NAME' | translate }}:</font>--> {{ selectedCrossing.vessel.name}}
+            </label>   
+            <div class="item item-divider">
+                {{ 'CREW_INFO' | translate }}
+            </div>
+            <label class="item">
+                <font size="2">{{ 'NAME' | translate }}:</font> {{ selectedCrossing.crew.name }}
+            </label>     
+            <label class="item">
+                <font size="2">{{ 'PATRON' | translate }}:</font> {{ selectedCrossing.crew.patronName }}
+            </label> 
+            <label class="item">
+                <font size="2">{{ 'MEMBERS' | translate }}:</font> {{ selectedCrossing.crew.memberCount }}
+            </label> 
+            <div class="item item-divider">
+                {{ 'WAYPOINTS' | translate }}
+            </div>
+            <label class="item">
+                {{ selectedTrack.waypoints.length }}
+            </label>               
+        </form>
+    </ion-content>
+</ion-view>

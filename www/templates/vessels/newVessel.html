@@ -1,0 +1,219 @@
+﻿<ion-view view-title="{{ 'NEW_VESSEL' | translate }}">
+    <ion-content class="padding" scroll="true">
+        <form name="newVesselForm" ng-controller="VesselCtrl" novalidate>
+            <div class="list list-inset">  
+                <div class="item item-divider">
+                    {{ 'NAME' | translate }}
+                </div>             
+                <label class="item item-input">
+                    <input type="text" ng-model="data.name" name="name" required>
+                </label>
+                
+                <div class="item item-divider item-button-right" style="margin-top:10px;">
+                    {{ 'SHIPOWNERS' | translate }}
+                    <a class="button button-icon icon ion-ios-plus-empty" style="top:-4px" ng-click="openOwnerModal()">
+                    </a>
+                </div>
+                <div class="item item-text-wrap" ng-if="selectedContacts.length == 0 && selectedOrgs.length == 0">
+                    {{ 'NO_SHIPOWNERS_SELECTED' | translate }}
+                </div>
+                <div class="item item-text-wrap item-icon-right" ng-repeat="contact in selectedContacts">
+                    <div>
+                        <span class="title">{{ contact.name }} {{ contact.lastname }}</span>
+                        <p class="description">{{ 'CAPABILITY' | translate }}: {{ contact.capabilityName }}</p>
+                    </div>
+                    <a class="icon ion-ios-close" ng-click="removeContactOwner(contact)"></a>
+                </div>
+                <div class="item item-text-wrap item-icon-right" ng-repeat="org in selectedOrgs">
+                    <div>
+                        <span class="title">{{ org.name }}</span>
+                        <p class="description">{{ 'COUNTRY' | translate }}: {{ org.countryName }}</p>
+                    </div>
+                    <a class="icon ion-ios-close" ng-click="removeOrgOwner(org)"></a>
+                </div>
+
+                <div class="item item-divider" style="margin-top:10px;">
+                    {{ 'VESSEL_DATA' | translate }}
+                </div>
+                <label class="item item-input">
+                    <input type="text" placeholder="{{ 'MODEL' | translate }}" ng-model="data.model" name="model" required>
+                </label>
+                <div class="item item-input item-select">
+                    <div class="input-label">
+                        &nbsp;
+                    </div>
+                    <select name="country" style="width:100%" 
+                            ng-options="type.code as type.type for type in vesselTypes"
+                            ng-model="data.type" required>
+
+                        <option value="" disabled selected style="display:none;">{{ 'TYPE' | translate }}</option>
+                    </select>
+                </div>
+                <label class="item item-input">
+                    <input type="number" placeholder="{{ 'LENGTH' | translate }}" ng-model="data.length" name="length" required>
+                </label>
+                <label class="item item-input">
+                    <input type="number" placeholder="{{ 'YEAR' | translate }}" ng-model="data.year" name="year" required>
+                </label>
+
+                <!--<label class="item item-input">
+                    <input type="text" placeholder="{{ 'BASE_PORT' | translate }}" ng-model="data.basePortId" name="basePortId" required>
+                </label>-->
+
+                <div class="item item-input item-select">
+                    <div class="input-label">
+                        &nbsp;
+                    </div>
+                    <select name="status" style="width:100%" 
+                            ng-options="port.code as port.name for port in ports"
+                            ng-model="data.basePortId" required>
+
+                        <option value="" disabled selected style="display:none;">{{ 'BASE_PORT' | translate }}</option>
+                    </select>
+                </div>
+
+              
+                <div class="item item-input item-select">
+                    <div class="input-label">
+                        &nbsp;
+                    </div>
+                    <select name="status" style="width:100%" 
+                            ng-options="status.code as status.name for status in vesselStatusList"
+                            ng-model="data.status" required>
+
+                        <option value="" disabled selected style="display:none;">{{ 'STATUS' | translate }}</option>
+                    </select>
+                </div>
+                                
+                <div class="item item-input item-select">
+                    <div class="input-label">
+                        &nbsp;
+                    </div>
+                    <select name="country" style="width:100%" 
+                            ng-options="country.code as country.name for country in countries"
+                            ng-model="data.country" required>
+
+                        <option value="" disabled selected style="display:none;">{{ 'COUNTRY' | translate }}</option>
+                    </select>
+                </div>
+
+                <label class="item item-input">
+                    <input type="number" placeholder="{{ 'BEAM' | translate }}" ng-model="data.beam" name="beam" required>
+                </label>
+                <label class="item item-input">
+                    <input type="text" placeholder="{{ 'BRAND' | translate }}" ng-model="data.brand" name="brand" required>
+                </label>
+                <label class="item item-input">
+                    <input type="number" placeholder="{{ 'DRAUGHT' | translate }}" ng-model="data.draught" name="draught" required>
+                </label>
+
+                <!--<label class="item item-input">
+                    <input type="text" placeholder="{{ 'LOCATION_PORT' | translate }}" ng-model="data.locationPortId" name="locationPortId" required>
+                </label>-->
+                <div class="item item-input item-select">
+                    <div class="input-label">
+                        &nbsp;
+                    </div>
+                    <select name="status" style="width:100%" 
+                            ng-options="port.code as port.name for port in ports"
+                            ng-model="data.locationPortId" required>
+
+                        <option value="" disabled selected style="display:none;">{{ 'LOCATION_PORT' | translate }}</option>
+                    </select>
+                </div>
+
+                <label class="item item-input">
+                    <input type="text" placeholder="{{ 'MMSI' | translate }}" ng-model="data.mmsi" name="mmsi" required>
+                </label>
+                <label class="item item-input">
+                    <input type="text" placeholder="{{ 'PLATE' | translate }}" ng-model="data.plate " name="plate " required>
+                </label>
+            </div>
+            <!--<button class="button button-block button-positive" ng-click="saveVessel()" ng-disabled="newVesselForm.$invalid || !ownersSet">{{ 'SAVE' | translate }}</button>-->
+            <button class="button button-block button-positive" ng-click="saveVessel()">{{ 'SAVE' | translate }}</button>
+        </form>
+    </ion-content>
+</ion-view>
+
+<script id="select-owner-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar align-title="left" class="bar-positive">
+            <h1 class="title">{{ 'SELECT_OWNER' | translate }}</h1>
+            <div class="buttons">
+                <button class="button button-icon icon ion-ios-close-empty" ng-click="closeOwnerModal()"></button>
+            </div>
+        </ion-header-bar>
+        <ion-content class="padding">
+            <form name="selectOwnerForm" novalidate>
+                <div class="list list-inset">
+                    <div class="item item-input item-select" style="margin-bottom:10px">
+                        <div class="input-label">
+                            &nbsp;
+                        </div>
+                        <select name="ownerType" style="width:100%" ng-change="onOwnerTypeSelectChange()"
+                                ng-model="selected.selectedOwnerType">
+                            <option value="person">{{ 'PERSON' | translate }}</option>
+                            <option value="org">{{ 'ORGANIZATION' | translate }}</option>
+                            <option value="" disabled selected style="display:none;">{{ 'SELECT_OWNER_TIPE' | translate }}</option>
+                        </select>
+                    </div>
+                    <div ng-if="selected.selectedOwnerType == 'person'">
+                        <div class="item item-input item-select" style="margin-bottom:10px">
+                            <div class="input-label">
+                                &nbsp;
+                            </div>
+                            <select name="member" style="width:100%" 
+                                    ng-options="contact as contact.name for contact in contacts"
+                                    ng-model="selected.selectedPersonOwner">
+
+                                <option value="" disabled selected style="display:none;">{{ 'SELECT_CONTACT' | translate }}</option>
+                            </select>
+                        </div>
+                        <div ng-if="selected.selectedPersonOwner != null">
+                            <div class="item item-divider">
+                                {{ 'PERSONAL_DATA' | translate }}
+                            </div>
+                            <div class="item item-text-wrap">
+                                <font size="2">{{ 'NAME' | translate }}:</font> {{ selected.selectedPersonOwner.name }}
+                            </div>
+                            <div class="item item-text-wrap">
+                                <font size="2">{{ 'LASTNAME' | translate }}:</font> {{ selected.selectedPersonOwner.lastname }}
+                            </div>
+                            <div class="item item-text-wrap">
+                                <font size="2">{{ 'CAPABILITY' | translate }}:</font> {{ selected.selectedPersonOwner.capabilityName }}
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="selected.selectedOwnerType == 'org'">
+                        <div class="item item-input item-select" style="margin-bottom:10px">
+                            <div class="input-label">
+                                &nbsp;
+                            </div>
+                            <select name="member" style="width:100%"
+                                    ng-options="org as org.name for org in organizations"
+                                    ng-model="selected.selectedOrgOwner">
+
+                                <option value="" disabled selected style="display:none;">{{ 'SELECT_ORGANIZATION' | translate }}</option>
+                            </select>
+                        </div>
+                        <div ng-if="selected.selectedOrgOwner != null">
+                            <div class="item item-divider">
+                                {{ 'ORGANIZATION_DATA' | translate }}
+                            </div>
+                            <div class="item item-text-wrap">
+                                <font size="2">{{ 'NAME' | translate }}:</font> {{ selected.selectedOrgOwner.name }}
+                            </div>
+                            <div class="item item-text-wrap">
+                                <font size="2">{{ 'CIF' | translate }}:</font> {{ selected.selectedOrgOwner.cif }}
+                            </div>
+                            <div class="item item-text-wrap">
+                                <font size="2">{{ 'COUNTRY' | translate }}:</font> {{ selected.selectedOrgOwner.countryName }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="button button-block button-positive" ng-click="addOwner()" ng-disabled="isAddOwnerButtonDisabled()">{{ 'ADD' | translate }}</button>
+            </form>
+        </ion-content>
+    </ion-modal-view>
+</script>

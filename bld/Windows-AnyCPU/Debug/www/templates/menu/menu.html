@@ -1,0 +1,68 @@
+﻿<ion-side-menus enable-menu-with-back-views="false">
+    <ion-side-menu-content class="post-size-14px">
+        <ion-nav-bar class="bar app-top-bar">
+            <ion-nav-back-button>
+            </ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="menuContent"></ion-nav-view>
+    </ion-side-menu-content>
+
+    <ion-side-menu side="left" class="main-menu" expose-aside-when="large">
+        <ion-content scroll="false">
+            <ion-list>            
+                <ion-item class="heading-item item item-avatar" nav-clear menu-close ui-sref="menu.profile">
+                    <div class="user-image-container">
+                        <pre-img ratio="_1_1" helper-class="rounded-image">
+                            <img class="user-image" ng-src="https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg" spinner-on-load>
+                        </pre-img>
+                    </div>
+                    <h2 class="greeting">{{ username }}</h2>
+                    <p class="message">{{ account.name }} {{ account.lastname }}</p>
+                </ion-item>
+            </ion-list>
+            <ion-list>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/home">
+                    <i class="button button-icon icon ion-home"></i>
+                    <h2 class="menu-text">{{ 'HOME' | translate }}</h2>
+                </ion-item>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/vessels">
+                    <i class="button button-icon icon ion-android-boat"></i>
+                    <h2 class="menu-text">{{ 'VESSELS' | translate }}</h2>
+                </ion-item>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/contacts/persons">
+                    <i class="button button-icon icon ion-android-contacts"></i>
+                    <h2 class="menu-text">{{ 'CONTACTS' | translate }}</h2>
+                </ion-item>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/crews">
+                    <i class="button button-icon icon ion-ios-people"></i>
+                    <h2 class="menu-text">{{ 'CREWS' | translate }}</h2>
+                </ion-item>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/crossings">
+                    <i class="button button-icon icon ion-android-compass"></i>
+                    <h2 class="menu-text">{{ 'CROSSINGS' | translate }}</h2>
+                </ion-item>
+                <!--ion-item nav-clear menu-close class="item-icon-left" href="#/menu/alerts">
+                    <i class="button button-icon icon ion-android-notifications"></i>
+                    <h2 class="menu-text">{{ 'ALERTS' | translate }}</h2>
+                </ion-item-->
+                <!--ion-item nav-clear menu-close class="item-icon-left" href="#/menu/checklists">
+                    <i class="button button-icon icon ion-android-checkbox-outline"></i>
+                    <h2 class="menu-text">{{ 'CHECKLISTS' | translate }}</h2>
+                </ion-item-->
+                <!--ion-item nav-clear menu-close class="item-icon-left" href="#/menu/settings">
+                    <i class="button button-icon icon ion-gear-a"></i>
+                    <h2 class="menu-text">{{ 'SETTINGS' | translate }}</h2>
+                </ion-item-->
+            </ion-list>
+            <ion-footer-bar>
+                <ion-item nav-clear menu-close class="item-icon-left" style="left:0;right:0;position: fixed;bottom:0;border-top:1px solid #33383e;" href="#" ng-click="logout()">
+                    <i class="button button-icon icon ion-share"></i>
+                    <h2 class="menu-text">{{ 'LOGOUT' | translate }}</h2>
+                </ion-item>
+            </ion-footer-bar>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>

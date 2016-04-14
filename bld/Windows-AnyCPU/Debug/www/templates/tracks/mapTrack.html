@@ -1,0 +1,17 @@
+﻿<ion-view view-title="{{ 'TRACK_MAP_TITLE' | translate }}">
+    <ion-nav-buttons side="right">
+        <a style="color: black;" class="button button-icon icon  ion-play" ng-click="startCrossing()" ng-if="!track.closed"></a>
+        <a style="color: black;" class="button button-icon icon ion-stop" ng-click="endCrossing()" ng-if="!track.closed"></a>
+        <!--<a style="color: black;" class="button button-icon icon ion-ios-trash-outline" ng-click="deleteCrew()"></a>-->
+    </ion-nav-buttons>
+    <ion-content scroll="false" data-tap-disabled="true">
+        <!--<div id="map" style="height:100%; width:100%" data-tap-disabled="true"></div>-->
+        <!--<ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>-->
+        <div id="map_canvas">
+            <ui-gmap-google-map refresh="true" center="map.center" options="options" zoom="map.zoom" draggable="true" bounds="map.bounds">
+                <ui-gmap-markers models="trackMarkers" coords="'self'" icon="'icon'"></ui-gmap-markers>
+                <ui-gmap-polyline path="polylines[0].path" stroke="polylines[0].stroke" geodesic="polylines[0].geodesic" static="true" icons="polylines[0].icons" zIndex="9999"></ui-gmap-polyline>
+            </ui-gmap-google-map>
+        </div>
+    </ion-content>
+</ion-view>

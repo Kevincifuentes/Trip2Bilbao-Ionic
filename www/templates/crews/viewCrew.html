@@ -1,0 +1,135 @@
+﻿<ion-view view-title="{{ 'CREW_INFO' | translate }}">
+    <ion-nav-buttons side="right">
+        <a style="color: black;" class="button button-icon icon ion-ios-compose-outline" ng-click="openUpdateCrewModal()"></a>
+        <a style="color: black;" class="button button-icon icon ion-ios-trash-outline" ng-click="deleteCrew()"></a>
+    </ion-nav-buttons>
+    <ion-content>
+        <form name="viewCrewForm">
+            <div class="item item-divider">
+                {{ 'NAME' | translate }}
+            </div>
+            <label class="item">
+                {{ selectedCrew.name }}
+            </label>
+            <div class="item item-divider">
+                {{ 'PATRON' | translate }}
+            </div>
+            <div class="item item-text-wrap" ng-if="patronMember != null">
+                <div>
+                    <span class="title">{{ patronMember.name }} {{ patronMember.lastname }}</span>
+                    <p class="description">{{ 'CAPABILITY' | translate }}: {{ patronMember.capabilityName }}</p>
+                </div>
+            </div>
+            <div class="item item-divider">
+                {{ 'MEMBERS' | translate }}
+            </div>
+            <div class="item item-text-wrap" ng-if="noPatronMembers.length == 0">
+                {{ 'NO_MEMBER_INCLUDED' | translate }}
+            </div>
+            <div class="item item-text-wrap" ng-repeat="member in noPatronMembers">
+                <div>
+                    <span class="title">{{ member.name }} {{ member.lastname }}</span>
+                    <p class="description">{{ 'CAPABILITY' | translate }}: {{ member.capabilityName }}</p>
+                </div>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>
+
+<script id="edit-crew-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar align-title="left" class="bar-positive">
+            <h1 class="title">{{ 'EDIT_CREW_MODAL_TITLE' | translate }}</h1>
+            <div class="buttons">
+                <button class="button button-icon icon ion-ios-close-empty" ng-click="closeUpdateCrewModal()"></button>
+            </div>
+        </ion-header-bar>
+        <ion-content class="padding">
+            <form name="updateCrewForm" novalidate>
+                <div class="list list-inset">
+                    <div class="item item-divider">
+                        {{ 'NAME' | translate }}
+                    </div>
+                    <label class="item item-input">
+                        <input type="text" placeholder="{{ 'NAME' | translate }}" ng-model="crewToUpdate.name" name="name" required>
+                    </label>
+                    <div class="item item-divider item-button-right">
+                        {{ 'PATRON' | translate }}
+                        <a class="button button-icon icon ion-ios-plus-empty" style="top:-4px" ng-click="openUMemberModal(true)">
+                        </a>
+                    </div>
+                    <div class="item item-text-wrap" ng-if="uPatronContact == null">
+                        {{ 'NO_PATRON_SELECTED' | translate }}
+                    </div>
+                    <div class="item item-text-wrap item-icon-right" ng-if="uPatronContact != null">
+                        <div>
+                            <span class="title">{{ uPatronContact.data.name }} {{ uPatronContact.data.lastname }}</span>
+                            <p class="description">{{ 'CAPABILITY' | translate }}: {{ uPatronContact.data.capabilityName }}</p>
+                        </div>
+                        <a class="icon ion-ios-close" ng-click="removeUPatron()"></a>
+                    </div>
+                    <div class="item item-divider item-button-right">
+                        {{ 'MEMBERS' | translate }}
+                        <a class="button button-icon icon ion-ios-plus-empty" style="top:-4px" ng-click="openUMemberModal(false)">
+                        </a>
+                    </div>
+                    <div class="item item-text-wrap" ng-if="uMemberContactList.length == 0">
+                        {{ 'NO_MEMBER_INCLUDED' | translate }}
+                    </div>
+                    <div class="item item-text-wrap item-icon-right" ng-repeat="member in uMemberContactList">
+                        <div>
+                            <span class="title">{{ member.name }} {{ member.lastname }}</span>
+                            <p class="description">{{ 'CAPABILITY' | translate }}: {{ member.capabilityName }}</p>
+                        </div>
+                        <a class="icon ion-ios-close" ng-click="removeUMember(member)"></a>
+                    </div>
+                </div>                    
+                <button class="button button-block button-positive" ng-click="updateCrew()" ng-disabled="updateCrewForm.$invalid || uPatronContact == null">{{ 'UPDATE' | translate }}</button>
+            </form>
+        </ion-content>
+    </ion-modal-view>
+</script>
+
+<script id="select-u-member-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar align-title="left" class="bar-positive">
+            <h1 class="title" ng-if="!isPatron">{{ 'SELECT_MEMBER' | translate }}</h1>
+            <h1 class="title" ng-if="isPatron">{{ 'SELECT_PATRON' | translate }}</h1>
+            <div class="buttons">
+                <button class="button button-icon icon ion-ios-close-empty" ng-click="closeUMemberModal()"></button>
+            </div>
+        </ion-header-bar>
+        <ion-content class="padding" scroll="false">
+            <form name="selectMemberForm" novalidate>
+                <div class="list list-inset">
+                    <div class="item item-input item-select">
+                        <div class="input-label">
+                            &nbsp;
+                        </div>
+                        <select name="member" style="width:100%"
+                                ng-options="contact as contact.name for contact in unselectedContactList"
+                                ng-model="uMember.data">
+
+                            <option value="" disabled selected style="display:none;">{{ 'SELECT_CONTACT' | translate }}</option>
+                        </select>
+                    </div>
+                    <div class="card" ng-if="uMember.data !== undefined">
+                        <div class="item item-divider">
+                            {{ 'PERSONAL_DATA' | translate }}
+                        </div>
+                        <div class="item item-text-wrap">
+                            <font size="2">{{ 'NAME' | translate }}:</font> {{ uMember.data.name }}
+                        </div>
+                        <div class="item item-text-wrap">
+                            <font size="2">{{ 'LASTNAME' | translate }}:</font> {{ uMember.data.lastname }}
+                        </div>
+                        <div class="item item-text-wrap">
+                            <font size="2">{{ 'CAPABILITY' | translate }}:</font> {{ uMember.data.capabilityName }}
+                        </div>
+                    </div>
+                </div>
+                <button class="button button-block button-positive" ng-click="addUMember()" ng-disabled="selectMemberForm.$invalid || uMember.data === undefined">{{ 'ADD' | translate }}</button>
+            </form>
+        </ion-content>
+    </ion-modal-view>
+</script>

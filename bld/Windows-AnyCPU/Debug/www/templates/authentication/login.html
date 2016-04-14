@@ -1,0 +1,56 @@
+﻿<ion-view class="login-view auth-view" view-title="Login" name="login-view" cache-view="false" style="background-color:#004EFF">
+    <ion-content scroll="false">       
+
+        <div class="row">
+            <div class="col col-center">
+                <div style="height:100px">
+                    <h1 style="color:#ffffff; text-align:center; text-decoration:double">
+                        {{ 'BLUSECUR' | translate }}
+                    </h1>
+                </div>
+                <div class="list">
+                    <label class="item item-input">
+                        <input type="text" placeholder="{{ 'USERNAME' | translate }}" ng-model="data.username">
+                    </label>
+                    <label class="item item-input">
+                        <input type="password" placeholder="{{ 'PASSWORD' | translate }}" ng-model="data.password">
+                    </label>
+                </div>
+                <div class="bottom-content">
+                    <button class="button button-stable button-block" ng-click="login()" ng-disabled="signupForm.$invalid">{{ 'LOGIN' | translate }}</button>
+                </div>
+                <div class="alternative-actions">
+                    <a class="forgot-password button button-small button-clear button-light" ng-click="openResetPassModal()">
+                        {{ 'FORGOT_PASSWORD' | translate }}
+                    </a>
+                    <a class="sign-up button button-small button-clear button-light" ui-sref="signup">
+                        {{ 'SIGNUP' | translate }}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </ion-content>
+
+</ion-view>
+
+<script id="password-reset-request-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar align-title="left" class="bar-positive">
+            <h1 class="title">{{ 'REQUEST_RESET_PASS_TITLE' | translate }}</h1>
+            <div class="buttons">
+                <button class="button button-icon icon ion-ios-close-empty" ng-click="closeResetPassModal()"></button>
+            </div>
+        </ion-header-bar>
+        <ion-content class="padding" scroll="false">
+            <form name="passResetForm" novalidate>
+                <div class="list list-inset">
+                    <label class="item item-input">
+                        <input type="email" placeholder="{{ 'EMAIL' | translate }}" ng-model="resetPassData.email" name="email" required>
+                    </label>
+                </div>
+                <button class="button button-block button-positive" ng-click="requestResetPass()" ng-disabled="passResetForm.$invalid">{{ 'SEND_REQUEST' | translate }}</button>
+            </form>
+        </ion-content>
+    </ion-modal-view>
+</script>

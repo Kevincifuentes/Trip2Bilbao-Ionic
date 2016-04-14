@@ -1,0 +1,67 @@
+<ion-side-menus enable-menu-with-back-views="false">
+    <ion-side-menu-content class="post-size-14px">
+        <ion-nav-bar class="bar app-top-bar">
+            <ion-nav-back-button>
+            </ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+            <ion-nav-buttons side="right">
+                <button class="button button-icon ion-plus-round ion-navicon"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="menuContent"></ion-nav-view>
+    </ion-side-menu-content>
+
+    <ion-side-menu side="left" class="main-menu" expose-aside-when="large">
+        <ion-content scroll="false">
+            <ion-list>
+                <a class="item item-thumbnail-left" href="#">
+                    <img class="user-image" ng-src="img/trip.png">
+                    <h2 class="greeting">Bienvenido a</h2>
+                    <br />
+                    <h2 class="message"><b>Trip2Bilbao</b></h2>
+                </a>
+            </ion-list>
+            <ion-list>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/home">
+                    <i class="button button-icon icon ion-home"></i>
+                    <h2 class="menu-text">Inicio</h2>
+                </ion-item>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/tracks/track-map">
+                    <i class="button button-icon icon ion-map"></i>
+                    <h2 class="menu-text">Mapa</h2>
+                </ion-item>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/contacts/persons">
+                    <i class="button button-icon icon ion-information"></i>
+                    <h2 class="menu-text">Información</h2>
+                </ion-item>
+                <ion-item nav-clear menu-close class="item-icon-left" href="#/menu/crews">
+                    <i class="button button-icon icon ion-more"></i>
+                    <h2 class="menu-text">Otros</h2>
+                </ion-item>
+                <!--<ion-item nav-clear menu-close class="item-icon-left" href="#/menu/crossings">
+                    <i class="button button-icon icon ion-android-compass"></i>
+                    <h2 class="menu-text">{{ 'CROSSINGS' | translate }}</h2>
+                </ion-item>-->
+                <!--ion-item nav-clear menu-close class="item-icon-left" href="#/menu/alerts">
+                    <i class="button button-icon icon ion-android-notifications"></i>
+                    <h2 class="menu-text">{{ 'ALERTS' | translate }}</h2>
+                </ion-item-->
+                <!--ion-item nav-clear menu-close class="item-icon-left" href="#/menu/checklists">
+                    <i class="button button-icon icon ion-android-checkbox-outline"></i>
+                    <h2 class="menu-text">{{ 'CHECKLISTS' | translate }}</h2>
+                </ion-item-->
+                <!--ion-item nav-clear menu-close class="item-icon-left" href="#/menu/settings">
+                    <i class="button button-icon icon ion-gear-a"></i>
+                    <h2 class="menu-text">{{ 'SETTINGS' | translate }}</h2>
+                </ion-item-->
+            </ion-list>
+            <ion-footer-bar>
+                <ion-item nav-clear menu-close class="item-icon-left" style="left:0;right:0;position: fixed;bottom:0;border-top:1px solid #33383e;" href="#" ng-click="algo()">
+                        <h2 class="menu-text">Sobre la aplicación</h2>
+                </ion-item>
+            </ion-footer-bar>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>
