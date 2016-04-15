@@ -85,6 +85,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
         views: {
             'menuContent': {
                 templateUrl: 'templates/home/home.html',
+                controller: 'HomeCtrl',
                 data: {
                     requiresLogin: true
                 }

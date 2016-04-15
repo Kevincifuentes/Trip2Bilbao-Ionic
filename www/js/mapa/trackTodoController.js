@@ -57,23 +57,24 @@
     var formatearInfo = function (tipo, item) {
         switch(tipo) {
             case 1:
-                return "<div><h3>" + item.nombreFarmacia + "</h3><br><b> Dirección:</b> " + item.direccionAbreviada + "<br><b> Contácto:</b> " + item.telefono + "</div>";
+                return "<div id='iw-container'><div class='iw-title'><b>" + item.nombreFarmacia + "</b></div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b> Dirección:</b> " + item.direccionAbreviada + "</li><li type='square'><b> Contácto:</b> " + item.telefono + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
                 break;
             case 2:
                 if(item.nombreParking in $rootScope.estadosParking)
                 {
-                    return "<div><h3><b>Parking:</b> " + item.nombreParking + "</h3><br><b> Capacidad: </b> " + item.capacidad + "<br><h4> Disponibilidad actual: </b>" + $rootScope.estadosParking[item.nombreParking] + "</div>";
+                    return "<div id='iw-container'><div class='iw-title'><b>Parking:</b> " + item.nombreParking + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b> Capacidad: </b> " + item.capacidad + "</li></ul><br><h4><b> Disponibilidad actual: </b>" + $rootScope.estadosParking[item.nombreParking] + "</h4></div><div class='iw-bottom-gradient'></div></div>";
                 }
                 else {
-                    return "<div><h3><b>Parking:</b> " + item.nombreParking + "</h3><br><b> Capacidad:</b> " + item.capacidad + "</div>";
+                    return "<div id='iw-container'><div class='iw-title'><b>Parking:</b> " + item.nombreParking + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b> Capacidad: </b> " + item.capacidad + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
                 }
             case 3:
-                return "<div><h3><b>" + item.tipo + ":</b> " + item.descripcion + "</h3><br> <b>Fecha Inicio:</b> " + item.inicio + " / <b>Fecha Fin: </b>" + item.fin + "</div>";
+                return "<div id='iw-container'><div class='iw-title'><b>" + item.tipo + "</b></div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b> Descripción: </b> " + item.descripcion + "</li><li type='square'><b>Fecha Inicio:</b> " + item.inicio + "</li><li type='square'><b>Fecha Fin: </b>" + item.fin + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
             case 4:
-                return "<div><h3><b>Centro de Salud:</b> " + item.nombreCentro + "</h3><br><b>Dirección:</b> " + item.direccionCompleta + "<br><b>Horario:</b> "+item.horario+"<br><b>Teléfono:<b> "+item.telefono+"<br><a href='" + item.web + "' class='button' target='_blank'><b>Página web:</b></a></div>";
+                return "<div id='iw-container'><div class='iw-title'><b>Centro de Salud:</b> " + item.nombreCentro + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Dirección:</b> " + item.direccionCompleta + "</li><li type='square'><b>Horario:</b> " + item.horario + "</li><li type='square'><b>Teléfono:<b> " + item.telefono + "</li></ul><a href='" + item.web + "' class='button' target='_blank'><b>Página web:</b></a></div><div class='iw-bottom-gradient'></div></div>";
             case 5:
-                return "<div><h3><b>Hospital:</b> " + item.nombreHospital + "</h3><br><b>Dirección:</b> " + item.direccionCompleta + "<br><b>Teléfono</b>" + item.telefono + "<br><a href='" + item.web + "' class='button' target='_blank'><b>Página web:</b></a></div>";
+                return "<div id='iw-container'><div class='iw-title'><b>Hospital:</b> " + item.nombreHospital + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Dirección:</b> " + item.direccionCompleta + "</li><li type='square'><b>Teléfono:<b> " + item.telefono + "</li></ul><a href='" + item.web + "' class='button' target='_blank'><b>Página web:</b></a></div><div class='iw-bottom-gradient'></div></div>";
             case 6:
+                return "<div id='iw-container'><div class='iw-title'><b>Parada de Bilbobus:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Abreviatura:</b> " + item.abreviatura + "</li></ul><table border='1' style='width:100%' border-spacing='5px' ><tr><th>Id de Linea</th><th>Nombre de Linea</th><th>Tiempo Restante</th></tr>";
                 var inicial = "<div><h3><b>Parada de Bilbobus:</b> " + item.nombreParada + "</h3><br><b>Abreviatura:</b><table border='1' style='width:100%' border-spacing='5px' ><tr><th>Id de Linea</th><th>Nombre de Linea</th><th>Tiempo Restante</th></tr>" + item.abreviatura;
                 if (item.id in $rootScope.estadosBilbobus) {
                     var tiempos = $rootScope.estadosBilbobus[item.id];
@@ -81,23 +82,29 @@
                         inicial = inicial + "<tr><td>" + tiempos[i].id + "</td><td>" + tiempos[i].linea + "</td><td>" + tiempos[i].tiempo + "</td></tr>";
                     }
                 }
-                inicial = inicial + "</table></div>";
+                inicial = inicial + "</table></div><div class='iw-bottom-gradient'></div></div>";
                 return inicial;
             case 7:
-                return "<div><h3><b>Parada de Bizkaibus:</b> " + item.nombreParada + "</h3></div>";
+                return "<div id='iw-container'><div class='iw-title'><b>Parada de Bizkaibus:</b> " + item.nombreParada + "</div></div>";
             case 8:
-                return "<div><h3><b>Parada de Euskotren:</b> " + item.nombreParada + "</h3><br><b>Código de parada:</b> " + item.codigoParada + "</div>";
+                if (item.web === undefined)
+                {
+                    return "<div id='iw-container'><div class='iw-title'><b>Parada de Euskotren:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Código de parada:</b> " + item.codigoParada + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
+                }
+                else {
+                    return "<div id='iw-container'><div class='iw-title'><b>Parada de Euskotren:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Código de parada:</b> " + item.codigoParada + "</li></ul><a href='" + item.web + "' class='button' target='_blank'><b>Página web:</b></a></div><div class='iw-bottom-gradient'></div></div>";
+                }
             case 9:
-                return "<div><h3><b>Parada de Metro:</b> " + item.nombreParada + "</h3><br><b>Código de parada:</b> " + item.codigoParada + "<br><a href='https://www.metrobilbao.eus/utilizando-el-metro/mapa-y-frecuencias' class='button' target='_blank'>Más información...</a></div>";
+                return "<div id='iw-container'><div class='iw-title'><b>Parada de Metro:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Código de parada:</b> " + item.codigoParada + "</li></ul><a href='https://www.metrobilbao.eus/utilizando-el-metro/mapa-y-frecuencias' class='button' target='_blank'>Más información...</a></div><div class='iw-bottom-gradient'></div></div>";
             case 10:
-                return "<div><h3><b>Parada de Tranvía:</b> " + item.nombreParada + "</h3><br><b>Localización:</b> " + item.descripcion + "</div>";
+                return "<div id='iw-container'><div class='iw-title'><b>Parada de Tranvía:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Localización:</b> " + item.descripcion + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
             case 11:
                 if (item.nombrePunto in $rootScope.estadosBici)
                 {
-                    return "<div><h3><b>Punto de bicis:</b> " + item.nombrePunto + "</h3><br><b>Estado:</b> " + item.estado + "<br><b>Capacidad:</b> " + item.capacidad + "<br><h4>Disponibilidad en Tiempo Real</h4>" + estadosBici[item.nombrePunto] + "</div>";
+                    return "<div id='iw-container'><div class='iw-title'><b>Punto de bicis:</b> " + item.nombrePunto + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Estado:</b> " + item.estado + "</li><li type='square'><b>Capacidad:</b> " + item.capacidad + "</li></ul><h4>Disponibilidad en Tiempo Real</h4>" + estadosBici[item.nombrePunto] + "</div><div class='iw-bottom-gradient'></div></div>";
                 }
                 else {
-                    return "<div><h3><b>Punto de bicis:</b> " + item.nombrePunto + "</h3><br><b>Estado:</b> " + item.estado + "<br><b>Capacidad:</b> " + item.capacidad + "</div>";
+                    return "<div id='iw-container'><div class='iw-title'><b>Punto de bicis:</b> " + item.nombrePunto + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Estado:</b> " + item.estado + "</li><li type='square'><b>Capacidad:</b> " + item.capacidad + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
                 }
             default:
                 console.log(tipo);
@@ -113,7 +120,8 @@
 
                 var contentString = formatearInfo(tipo, item);
                 var infowindow = new google.maps.InfoWindow({
-                    content: contentString
+                    content: contentString,
+                    maxWidth: 350
                 });
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(item.latitud, item.longitud),
