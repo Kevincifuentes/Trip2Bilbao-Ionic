@@ -618,7 +618,7 @@
 
         controlesUI.appendChild(document.createElement('br'));
 
-        //CHECKBOX DE FARMACIAS 
+        //CHECKBOX DE Centros 
         var checkbox = document.createElement('input');
         checkbox.style.width = '15px';
         checkbox.style.height = '15px';
@@ -650,6 +650,49 @@
         var label = document.createElement('label')
         label.htmlFor = "id";
         label.appendChild(document.createTextNode('Centros de salud'));
+
+        controlesUI.appendChild(checkbox);
+        controlesUI.appendChild(label);
+
+        controlesUI.appendChild(document.createElement('br'));
+
+        //CHECKBOX DE Favoritos 
+        var checkbox = document.createElement('input');
+        checkbox.style.width = '15px';
+        checkbox.style.height = '15px';
+        checkbox.type = "checkbox";
+        checkbox.name = "name";
+        checkbox.value = "value";
+        checkbox.id = "favs";
+        checkbox.checked = false;
+        checkbox.onclick = function () {
+            // access properties using this keyword
+            if (this.checked) {
+            console.log("marcado");
+                // SI ESTA MARCADO
+                for(var i =0; i<$rootScope.marcadoresFavoritos.length; i++)
+                {
+                    $rootScope.marcadoresFavoritosGlobal[i].setMap(map);
+                    infowindow = new google.maps.InfoWindow({
+                        maxWidth: 350
+                    });
+                    google.maps.event.addListener($rootScope.marcadoresFavoritosGlobal[i], 'click', function () {
+                        infowindow.setContent(this.content);
+                        infowindow.open(map, this);
+                    });
+                }
+            } else {
+            console.log("sin marcar");
+                for(var i =0; i<$rootScope.marcadoresFavoritos.length; i++)
+                {
+                    $rootScope.marcadoresFavoritosGlobal[i].setMap(null);
+                }
+            }
+        };
+
+        var label = document.createElement('label')
+        label.htmlFor = "id";
+        label.appendChild(document.createTextNode('Favoritos'));
 
         controlesUI.appendChild(checkbox);
         controlesUI.appendChild(label);

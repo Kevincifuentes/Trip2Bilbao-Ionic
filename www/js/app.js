@@ -12,6 +12,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     'blusecur.crossing.controllers',
     'blusecur.track.controllers',
     'blusecur.mapa.controllers',
+    'blusecur.favoritos.controllers',
     'blusecur.authentication.services',
     'blusecur.contact.services',
     'blusecur.vessel.services',
@@ -81,7 +82,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
 
     .state('menu.home', {
         url: '/home',
-        cache: true,
+        cache: false,
         views: {
             'menuContent': {
                 templateUrl: 'templates/home/home.html',
@@ -279,6 +280,20 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                 'menuContent': {
                     templateUrl: 'templates/tracks/mapTrackTodo.html',
                     controller: 'TrackMapTodoCtrl',
+                    data: {
+                        requiresLogin: false
+                    }
+                }
+            }
+    })
+
+        .state('menu.track-mapFav', {
+            url: '/tracks/track-map/fav',
+            cache: false,
+            views: {
+                'menuContent': {
+                    templateUrl: 'templates/tracks/mapTrackFav.html',
+                    controller: 'TrackMapFav',
                     data: {
                         requiresLogin: false
                     }

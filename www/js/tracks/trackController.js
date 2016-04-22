@@ -3,6 +3,7 @@
 .controller('TrackMapCtrl', function ($rootScope, $compile, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, store, jwtHelper, $ionicModal, CrossingService, VesselService, CrewService, ContactsService, LovsService, LocationService, uiGmapGoogleMapApi, $http) {
     if ($rootScope.map === undefined)
     {
+        $rootScope.modo = "coche";
         console.log("primera vez");
         //Inicializar mapa
         var inticor = new google.maps.LatLng(43.262979, -2.934911);
@@ -21,7 +22,15 @@
         controlesDiv.index = 3;
         $rootScope.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(controlesDiv);
 
-       
+        var controlesDiv2 = document.createElement('DIV');
+        var controles2 = new CrearControles(controlesDiv2, $rootScope.map, $rootScope, $compile);
+        controlesDiv2.index = 3;
+        $rootScope.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlesDiv2);
+
+        for(var i =0; i<$rootScope.marcadoresFavoritos.length; i++)
+        {
+            $rootScope.marcadoresFavoritos[i].setMap($rootScope.map);
+        }
 
     }
     else
@@ -61,6 +70,7 @@
             alert('Unable to get location: ' + error.message);
         });
     }*/
+
     $rootScope.searchQuery;
     $rootScope.origen = "";
     $rootScope.destino = "";
@@ -109,17 +119,49 @@
             console.log('Tapped!', res);
         });
     };*/
-        var calcularRuta = function (origen, destino) {
-            var start = new google.maps.LatLng(origen.coords.latitude, origen.coords.longitude);
-            var end = new google.maps.LatLng(destino.coords.latitude, destino.coords.longitude);
-            var request = {
-                origin: start,
-                destination: end,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-
+    var calcularRuta = function (origen, destino, modo) {
+        console.log("Buena llamada");
+        var transporte;
+        var start = new google.maps.LatLng(origen.lat(), origen.lng());
+        var end = new google.maps.LatLng(destino.lat(), destino.lng());
+        var request;
+        console.log(modo);
+            switch (modo) {
+                case "coche":
+                    request = {
+                        origin: start,
+                        destination: end,
+                        travelMode: google.maps.TravelMode.DRIVING
+                    };
+                    break;
+                case "andando":
+                    request = {
+                        origin: start,
+                        destination: end,
+                        travelMode: google.maps.TravelMode.WALKING
+                    };
+                    break;
+                case "autobus":
+                    request = {
+                        origin: start,
+                        destination: end,
+                        travelMode: google.maps.TravelMode.TRANSIT,
+                        transitOptions: { modes: [google.maps.TransitMode.BUS] }
+                    };
+                    break;
+                case "tren":
+                    request = {
+                        origin: start,
+                        destination: end,
+                        travelMode: google.maps.TravelMode.TRANSIT,
+                        transitOptions: { modes: [google.maps.TransitMode.RAIL, google.maps.TransitMode.SUBWAY, google.maps.TransitMode.TRAIN, google.maps.TransitMode.TRAM] }
+                    };
+                    break;
+            }
             $rootScope.directionsService.route(request, function (response, status) {
+                console.log(status);
                 if (status == google.maps.DirectionsStatus.OK) {
+                    console.log("Ruta correcta");
                     limpiarMapa();
                     $rootScope.directionsDisplay = new google.maps.DirectionsRenderer();
                     $rootScope.directionsDisplay.setMap($rootScope.map);
@@ -142,6 +184,7 @@
             });
             var marker = new google.maps.Marker({
                 position: $rootScope.posActual,
+                animation: google.maps.Animation.DROP,
                 title: "Prueba"
             });
             $rootScope.infoWindows.push(infowindow);
@@ -206,6 +249,7 @@
                         //PROVISIONAL
 
                         /////////////
+                        
                         $rootScope.seguirBuscarRuta(codigoPostal, true);
                     }
                 } else {
@@ -215,7 +259,10 @@
         };
 
         $rootScope.buscarRuta = function (origen, destino) {
+            $rootScope.busquedaRealizada = true;
             $rootScope.busqueda.hide();
+            $rootScope.origenNombre = origen;
+            $rootScope.origenDestino = destino;
             //Mirar la cantidad de parkings que hay, para eso obtengo el codigo postal en destino
             obtenerCodigoPostal(destino);
 
@@ -240,8 +287,24 @@
                     if($rootScope.numeroParkings === 1)
                     {
                         console.log("1");
-
-                    }else
+                        var geocoder = new google.maps.Geocoder();
+                        geocoder.geocode({ 'address': $rootScope.origenNombre }, function (results, status) {
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                //alert(results[0].geometry.location);
+                                var puntoLocalizacion = results[0].geometry.location;
+                                calcularRuta(puntoLocalizacion, new google.maps.LatLng($rootScope.parkings[0].latitud, $rootScope.parkings[0].longitud), $rootScope.modo);
+                                geocoder.geocode({ 'address': $rootScope.origenDestino }, function (results, status) {
+                                    if (status == google.maps.GeocoderStatus.OK) {
+                                        var destino = results[0].geometry.location;
+                                        //calcularRutaSegunda()
+                                    }
+                                });
+                            } else {
+                                alert("No se pudo obtener el punto exacto por: " + status);
+                            }
+                        });
+                    }
+                    else
                     {
                         console.log("MAS DE 1");
                     }
@@ -268,13 +331,21 @@
             });
         };
         $rootScope.data = {};
-
+        
         $rootScope.anadirFav = function(lat, lng){
             console.log("Estoy en prueba " + lat + " / " + lng);
+            $rootScope.data.latitud = lat;
+            $rootScope.data.longitud = lng;
             var myPopup = $ionicPopup.show({
-                template: '<input type="text" ng-model="data.nombreFav">',
-                title: 'Introduce un nombre',
-                subTitle: 'Por favor, introduce un nombre identificativo para el favorito.',
+                template: '<label for="nombreIdent"> Nombre identificativo: </label><input type="text" ng-model="data.nombreFav"><label for="modoTransporte"> Modo de transporte: </label><br>' +
+    '<select name="singleSelect" ng-model="data.modoTransporte">'+
+      '<option value="coche" selected>En coche</option>' +
+      '<option value="andando">A pie</option>' +
+      '<option value="autobus">Autobus</option>' +
+      '<option value="tren">Tren</option>' +
+    '</select>',
+                title: 'Introduce información identificativa',
+                subTitle: 'Por favor, introduce un nombre identificativo para el favorito y el modo de transporte habitual.',
                 scope: $rootScope,
                 buttons: [
                   { text: 'Cancelar' },
@@ -287,7 +358,7 @@
                               console.log("No se ha insertado nada");
                               e.preventDefault();
                           } else {
-                              return $rootScope.data.nombreFav;
+                              return $rootScope.data;
                           }
                       }
                   }
@@ -296,6 +367,69 @@
 
             myPopup.then(function (res) {
                 //Añadir favorito
+                if(res)
+                {
+                    console.log(res);
+                    var array = window.localStorage.getItem('favoritos');
+                    if (array === null) {
+                        var arrayFav = new Array();
+                        arrayFav.push(res);
+                        window.localStorage.setItem( 'favoritos', JSON.stringify(arrayFav));
+                    }
+                    else
+                    {
+                        var arrayFav = JSON.parse(array);
+                        arrayFav.push(res);
+                        window.localStorage.setItem('favoritos', JSON.stringify(arrayFav));
+                    }
+
+                    $rootScope.marcadorFav.setMap(null);
+
+                    var content = '<div id="iw-container">' +
+                                        '<div class="iw-title">Favorito ' + res.nombreFav + '</div>' +
+                                        '<div class="iw-content">' +
+                                            '<div class="iw-subTitle">Información</div>' +
+                                            '<ul><li><b>Posición: </b><ul><li>Latitud: '+res.latitud+'</li><li>Longitud:'+res.longitud+'</li></ul></li><li><b>Modo de transporte: '+res.modoTransporte+'</b></li></ul>'+
+                                        '<button ng-click="eliminarFav('+res.latitud+','+res.longitud+', true, '+$rootScope.marcadoresFavoritos.length+')">Eliminar favorito</button>' +
+                                        '<button ng-click="buscarRutaAqui(' + res.latitud + ',' + res.longitud + ')">Ir aquí</button>' +
+                                        '</div>' +
+                                        '<div class="iw-bottom-gradient"></div>' +
+                                        '</div>';
+                    var compiled = $compile(content)($rootScope);
+                    var infowindow = new google.maps.InfoWindow({
+                        content: compiled[0],
+                        maxWidth: 350
+                    });
+
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(res.latitud, res.longitud),
+                        title: "Favorito " + res.nombreFav,
+                        icon: 'img/fav.png',
+                    });
+
+                    var marker2 = new google.maps.Marker({
+                        position: new google.maps.LatLng(res.latitud, res.longitud),
+                        title: "Favorito " + res.nombreFav,
+                        icon: 'img/fav.png',
+                        content: compiled[0],
+                        dataId: i
+                    });
+
+                    $rootScope.infoWindows.push(infowindow);
+                    $rootScope.infoWindowsFavoritos.push(infowindow);
+                    $rootScope.marcadoresFavoritosGlobal.push(marker2);
+                    $rootScope.marcadoresFavoritos.push(marker);
+
+                    //se añade un evento al marcador
+                    google.maps.event.addListener(marker, 'click', function () {
+                        infowindow.open($rootScope.map, marker);
+                    });
+
+                    marker.setMap($rootScope.map);
+                    $rootScope.correctoFav(res);
+                }
+                
+
 
             });
         }
@@ -383,6 +517,7 @@
                     });
                 } else {
                     // SI NO ESTA MARCADO
+                    $rootScope.marcadorFav.setMap(null);
                     google.maps.event.clearListeners($rootScope.map, 'click');
                 }
             };
@@ -395,6 +530,122 @@
             controlesUI.appendChild(label);
             controlesUI.appendChild(checkbox);
             controlesUI.appendChild(label);
+
+            google.maps.event.addDomListener(controlesUI, 'click', function () {
+                if (controlesUI.style.fontWeight == 'bold') {
+                    controlesUI.style.fontWeight = 'normal';
+                } else {
+                    controlesUI.style.fontWeight = 'bold';
+                }
+            });
+
+            google.maps.event.addDomListener(controlesUI, 'mouseover', function () {
+                controlesUI.style.backgroundColor = '#e8e8e8';
+                controlesUI.style.fontSize = '35px';
+            });
+
+            google.maps.event.addDomListener(controlesUI, 'mouseout', function () {
+                controlesUI.style.backgroundColor = 'white';
+                controlesUI.style.fontSize = '14px';
+            });
+        }
+
+        function CrearControles(controlesDiv, map) {
+
+            controlesDiv.style.padding = '5px 0px';
+            var controlesUI = document.createElement('DIV');
+            controlesUI.style.backgroundColor = 'white';
+            controlesUI.style.borderStyle = 'solid';
+            controlesUI.style.borderWidth = '1px';
+            controlesUI.style.borderColor = 'gray';
+            controlesUI.style.boxShadow = 'rgba(0, 0, 0, 0.398438) 0px 2px 4px';
+            controlesUI.style.cursor = 'pointer';
+            controlesUI.style.textAlign = 'center';
+            controlesUI.title = 'Controles';
+            controlesDiv.appendChild(controlesUI);
+
+            //CHECKBOX DE CLICK
+            var radio1 = document.createElement('input');
+            radio1.id = 'myRadioId1';
+            radio1.type = 'radio';
+            radio1.name = 'radioGroup';
+            radio1.value = 'Coche';
+            radio1.checked = 'true';
+            radio1.onclick = function () {
+                $rootScope.modo = "coche";
+                if ($rootScope.busquedaRealizada === true)
+                {
+                    $rootScope.seguirBuscarRuta(0, false);
+                }
+            }
+
+            var radio2 = document.createElement('input');
+            radio2.id = 'myRadioId2';
+            radio2.type = 'radio';
+            radio2.name = 'radioGroup';
+            radio2.value = 'Pie';
+            radio2.onclick = function () {
+                $rootScope.modo = "andando";
+                if ($rootScope.busquedaRealizada === true) {
+                    $rootScope.seguirBuscarRuta(0, false);
+                }
+            }
+
+            var radio3 = document.createElement('input');
+            radio3.id = 'myRadioId3';
+            radio3.type = 'radio';
+            radio3.name = 'radioGroup';
+            radio3.value = 'Bus';
+            radio3.onclick = function () {
+                $rootScope.modo = "autobus";
+                if ($rootScope.busquedaRealizada === true) {
+                    $rootScope.seguirBuscarRuta(0, false);
+                }
+            }
+
+            var radio4 = document.createElement('input');
+            radio4.id = 'myRadioId3';
+            radio4.type = 'radio';
+            radio4.name = 'radioGroup';
+            radio4.value = 'Bus';
+            radio4.onclick = function () {
+                $rootScope.modo = "tren";
+                if ($rootScope.busquedaRealizada === true) {
+                    $rootScope.seguirBuscarRuta(0, false);
+                }
+            }
+
+            var h1 = document.createElement('h4');
+            h1.innerHTML = 'Modo de Transporte';
+
+            var label1 = document.createElement('label');
+            label1.setAttribute('for', radio1.id);
+            label1.innerHTML = 'Coche';
+
+            var label2 = document.createElement('label');
+            label2.setAttribute('for', radio2.id);
+            label2.innerHTML = 'A pie';
+
+            var label3 = document.createElement('label');
+            label3.setAttribute('for', radio3.id);
+            label3.innerHTML = 'Autobus';
+
+            var label4 = document.createElement('label');
+            label4.setAttribute('for', radio4.id);
+            label4.innerHTML = 'Tren';
+
+            controlesUI.appendChild(h1);
+            controlesUI.appendChild(radio1);
+            controlesUI.appendChild(label1);
+            controlesUI.appendChild(document.createElement('br'));
+            controlesUI.appendChild(radio2);
+            controlesUI.appendChild(label2);
+            controlesUI.appendChild(document.createElement('br'));
+            controlesUI.appendChild(radio3);
+            controlesUI.appendChild(label3);
+            controlesUI.appendChild(document.createElement('br'));
+            controlesUI.appendChild(radio4);
+            controlesUI.appendChild(label4);
 
             google.maps.event.addDomListener(controlesUI, 'click', function () {
                 if (controlesUI.style.fontWeight == 'bold') {

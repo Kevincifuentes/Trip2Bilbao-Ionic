@@ -33,7 +33,8 @@ placeTools.directive('ionGooglePlace', [
                         scope.dropDownActive = false;
                         scope.searchQuery = location.description;
                         if (scope.locationChanged) {
-                            scope.locationChanged()(location.description);
+                            scope.locationChanged({ punto: location.description });
+                            //scope.locationChanged()();
                         }
                     };
                     if (!scope.radius) {

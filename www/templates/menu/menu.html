@@ -7,13 +7,13 @@
                 <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
             </ion-nav-buttons>
             <ion-nav-buttons side="right">
-                <button class="button button-icon ion-plus-round ion-navicon"></button>
+                <button class="button button-icon ion-plus-round ion-navicon" ng-click="abrirAnadirFav()"></button>
             </ion-nav-buttons>
         </ion-nav-bar>
         <ion-nav-view name="menuContent"></ion-nav-view>
     </ion-side-menu-content>
 
-    <ion-side-menu side="left" class="main-menu" expose-aside-when="large">
+    <ion-side-menu side="left" class="main-menu">
         <ion-content scroll="false">
             <ion-list>
                 <a class="item item-thumbnail-left" href="#">
