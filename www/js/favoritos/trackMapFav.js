@@ -1,6 +1,6 @@
 ﻿angular.module('blusecur.favoritos.controllers', [])
 
-.controller('TrackMapFav', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, store, jwtHelper, $ionicModal, CrossingService, VesselService, CrewService, ContactsService, LovsService, LocationService, uiGmapGoogleMapApi, $http) {
+.controller('TrackMapFav', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, $ionicModal, uiGmapGoogleMapApi, $http) {
     
     //Crear elecciones
 

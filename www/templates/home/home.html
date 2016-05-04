@@ -42,7 +42,7 @@
                     <i class="icon ion-android-bus"> </i>
                 </span>
             </div>
-                <a ng-click="mostrarFavorito($index)" class="button ion-chevron-right"></a>
+                <a ng-click="mostrarFavorito($index)" class="button button-icon ion-chevron-right"></a>
                 <ion-option-button class="button button-assertive"
                                    ng-click="eliminarFav(item.latitud, item.longitud, false, $index)">
                     Eliminar
@@ -57,38 +57,42 @@
             <h1 class="title">Añadir favorito</h1>
             <div class="button button-clear" ng-click="favorito.hide()"><a class="button button-icon icon ion-close"></a></div>
         </header>
-        <content has-header="true" padding="true">
+        <ion-content has-header="true" padding="true">
             <br />
             <br />
             <br />
             <div class="card">
-                <div class="item item-text-wrap">
-                    Introduce una localización para añadirla como favorito
+                <div class="item item-divider">
+                    Introduce una localización a añadir
                 </div>
             </div>
-            <label class="item item-input item-stacked-label">
-                <span class="input-label">Nombre del favorito</span>
-                <input type="text" ng-model="nombre" placeholder="Nombre">
-            </label>
-            <br />
-            <label class="item item-input item-stacked-label">
-                <span class="input-label">Modo de transporte</span>
-                <select name="singleSelect" ng-model="transporte">
-                    <option value="coche" selected>En coche</option>
-                    <option value="andando">A pie</option>
-                    <option value="autobus">Autobus</option>
-                    <option value="tren">Tren</option>
-                </select>
-            </label>
-            <br />
-            <label class="item item-input item-stacked-label">
-                <span class="input-label">Localización</span>
-                <div class="input-group"><ion-google-place  placeholder="Lugar" ng-model="puntoFav" location-changed="elegirFav(punto)"><button id="buscarFav" class="button icon-right ion-search button-dark" type="button" ng-click="buscarFav(puntoFav)">Buscar</button></div>
-            </label>
-            <div id="favorito" style="width:100%;min-height: 200px;" name="favorito" ></div>
-            <span class="input-group-btn">
-                <button id="anadirFav" class="button icon-right ion-search button-dark" type="button" ng-click="anadirFav(nombre, transporte, puntoFav)">Añadir</button>
-            </span>
-        </content>
-    </div>
+            <div class="item item-text-wrap">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Nombre del favorito</span>
+                    <input type="text" ng-model="nombre" placeholder="Nombre">
+                </label>
+                <br />
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Transporte</span>
+                    <select ng-model="transporte">
+                        <option value="coche" selected>coche</option>
+                        <option value="andando">A pie</option>
+                        <option value="autobus">Autobus</option>
+                        <option value="tren">Tren</option>
+                    </select>
+                </label>
+
+                <br />
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Localización</span>
+                    <div class="input-group"><ion-google-place placeholder="Lugar" ng-model="puntoFav" location-changed="elegirFav(punto)"><button id="buscarFav" class="button icon-right ion-search button-dark" type="button" ng-click="buscarFav(puntoFav)">Buscar</button></div>
+                </label>
+                <div id="favorito" style="width:100%;min-height: 200px;" name="favorito"></div>
+                <span class="input-group-btn">
+                    <button id="anadirFav" class="button icon-right ion-search button-dark" type="button" ng-click="anadirFav(nombre, transporte, puntoFav)">Añadir</button>
+                </span>
+            </div>
+            
+         </ion-content>
+</div>
 </script>

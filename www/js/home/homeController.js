@@ -1,6 +1,13 @@
 ﻿angular.module('blusecur.home.controllers', [])
 
 .controller('HomeCtrl', function ($scope, $rootScope, $compile, $state, $ionicModal, $ionicPopup) {
+    $rootScope.destinoDesdeFav = null;
+    $rootScope.enrutado = false;
+    $rootScope.estadosParking = {};
+    $rootScope.estadosBilbobus = {};
+    $rootScope.estadosBici = {};
+    $rootScope.modo = "coche";
+    $rootScope.transporte = "coche";
     $rootScope.correctoFav = function (res) {
             var alertPopup = $ionicPopup.alert({
                 title: 'Favorito añadido correctamente',
@@ -50,7 +57,7 @@
                         if (index !== undefined)
                         {
                             $rootScope.arrayFavoritos.splice(index, 1);
-                            $rootScope.marcadoresFavoritosGlobal[index].setMap(null);
+                            $rootScope.marcadoresFavoritos[index].setMap(null);
                             $rootScope.marcadoresFavoritosGlobal[index].setMap(null);
                             $rootScope.marcadoresFavoritos.splice(index, 1);
                             window.localStorage.setItem('favoritos', JSON.stringify($rootScope.arrayFavoritos));
@@ -70,7 +77,10 @@
     $rootScope.marcadoresFavoritos = new Array();
     $rootScope.infoWindowsFavoritos = new Array();
     $rootScope.marcadoresFavoritosGlobal = new Array();
-
+    if(arrayFav === null)
+    {
+        arrayFav = [];
+    }
     for(var i = 0; i<arrayFav.length; i++)
     {
         console.log(arrayFav[i]);
@@ -82,7 +92,7 @@
                             '<div class="iw-subTitle">Información</div>' +
                             '<ul><li><b>Posición: </b><ul><li>Latitud: ' + arrayFav[i].latitud + '</li><li>Longitud:' + arrayFav[i].longitud + '</li></ul></li><li><b>Modo de transporte: ' + arrayFav[i].modoTransporte + '</b></li></ul>' +
                         '<button ng-click="eliminarFav(' + arrayFav[i].latitud + ',' + arrayFav[i].longitud + ', true,'+i+')">Eliminar favorito</button>' +
-                        '<button ng-click="buscarRutaAqui(' + arrayFav[i].latitud + ',' + arrayFav[i].longitud + ')">Ir aquí</button>' +
+                        '<button ng-click="buscarRutaAqui(' + arrayFav[i].latitud + ',' + arrayFav[i].longitud + ',&quot;' + arrayFav[i].modoTransporte + '&quot;)">Ir aquí</button>' +
                         '</div>' +
                         '<div class="iw-bottom-gradient"></div>' +
                         '</div>';
@@ -175,9 +185,12 @@
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode({ 'address': punto }, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-                //alert(results[0].geometry.location);
+                alert(results[0].geometry.location);
                 var puntoLocalizacion = results[0].geometry.location;
-                marker.setMap(null);
+                if(marker !== undefined)
+                {
+                    marker.setMap(null);
+                }
 
                 var bounds = new google.maps.LatLngBounds();
                 marker = new google.maps.Marker({
@@ -203,11 +216,13 @@
             var array = window.localStorage.getItem('favoritos');
             if (array === null) {
                 var arrayFav = new Array();
+                console.log($rootScope.puntoAAnadir);
                 arrayFav.push({ nombreFav: nombre, latitud: $rootScope.puntoAAnadir.lat(), longitud: $rootScope.puntoAAnadir.lng(), modoTransporte: transporte });
                 window.localStorage.setItem('favoritos', JSON.stringify(arrayFav));
             }
             else {
                 var arrayFav = JSON.parse(array);
+                console.log($rootScope.puntoAAnadir);
                 arrayFav.push({ nombreFav: nombre, latitud: $rootScope.puntoAAnadir.lat(), longitud: $rootScope.puntoAAnadir.lng(), modoTransporte: transporte });
                 window.localStorage.setItem('favoritos', JSON.stringify(arrayFav));
             }
@@ -220,7 +235,7 @@
                                     '<div class="iw-subTitle">Información</div>' +
                                     '<ul><li><b>Posición: </b><ul><li>Latitud: ' + $rootScope.puntoAAnadir.lat() + '</li><li>Longitud:' + $rootScope.puntoAAnadir.lng() + '</li></ul></li><li><b>Modo de transporte: ' + transporte + '</b></li></ul>' +
                                 '<button ng-click="eliminarFav(' + $rootScope.puntoAAnadir.lat() + ',' + $rootScope.puntoAAnadir.lng() + ', true, ' + $rootScope.marcadoresFavoritos.length + ')">Eliminar favorito</button>' +
-                                '<button ng-click="buscarRutaAqui(' + $rootScope.puntoAAnadir.lat() + ',' + $rootScope.puntoAAnadir.lng() + ')">Ir aquí</button>' +
+                                '<button ng-click="buscarRutaAqui(' + $rootScope.puntoAAnadir.lat() + ',' + $rootScope.puntoAAnadir.lng() + ',&quot;' + $rootScope.puntoAAnadir.modoTransporte + '&quot;)">Ir aquí</button>' +
                                 '</div>' +
                                 '<div class="iw-bottom-gradient"></div>' +
                                 '</div>';
@@ -278,5 +293,12 @@
         }
         
     };
-    
+    $rootScope.buscarRutaAqui = function (latitud, longitud, modo) {
+        $rootScope.modo = modo;
+        console.log("En HomeController " + modo);
+        $rootScope.busquedaRealizada = true;
+        $rootScope.conClick = true;
+        $rootScope.destinoDesdeFav = new google.maps.LatLng(latitud, longitud);
+        $state.go('menu.track-map');
+    }
 });

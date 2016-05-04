@@ -4,22 +4,11 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     'blusecur.menu.controllers',
-    'blusecur.authentication.controllers',
     'blusecur.home.controllers',
-    'blusecur.contact.controllers',
-    'blusecur.vessel.controllers',
-    'blusecur.crew.controllers',
-    'blusecur.crossing.controllers',
     'blusecur.track.controllers',
     'blusecur.mapa.controllers',
     'blusecur.favoritos.controllers',
-    'blusecur.authentication.services',
-    'blusecur.contact.services',
-    'blusecur.vessel.services',
-    'blusecur.lovs.services',
-    'blusecur.crew.services',
-    'blusecur.crossing.services',
-    'blusecur.location.services',
+    'blusecur.navigation.controllers',
     'blusecur.directives',
     'blusecur.factories',
     'uiGmapgoogle-maps',
@@ -32,7 +21,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     //API_URL: 'http://api.blusecur.net'
 })
 
-.run(function ($ionicPlatform, $rootScope, $state, store, jwtHelper) {
+.run(function ($ionicPlatform, $rootScope, $state, jwtHelper) {
     $rootScope.primera = true;
     /*$rootScope.$on('$stateChangeStart', function (e, to, toParams, fromState, fromParams) {
 
@@ -88,7 +77,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                 templateUrl: 'templates/home/home.html',
                 controller: 'HomeCtrl',
                 data: {
-                    requiresLogin: true
+                    requiresLogin: false
                 }
             }
         }
@@ -261,7 +250,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
 
     .state('menu.track-map', {
         url: '/tracks/track-map',
-        cache: true,
+        cache: false,
         views: {
             'menuContent': {
                 templateUrl: 'templates/tracks/mapTrack.html',
@@ -368,6 +357,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
 
     .state('menu.checklists', {
         url: '/checklists',
+        cache: true,
         views: {
             'menuContent': {
                 templateUrl: 'templates/checklists/checklists.html',
@@ -376,6 +366,19 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                 }
             }
         }
+    })
+
+    .state('menu.navigation', {
+            url: '/navigation',
+            views: {
+                'menuContent': {
+                    templateUrl: 'templates/navigation/navigation.html',
+                    controller: 'NavigationCtrl',
+                    data: {
+                        requiresLogin: false
+                    }
+                }
+            }
     })
 
     .state('menu.settings', {

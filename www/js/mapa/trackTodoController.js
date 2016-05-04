@@ -1,6 +1,6 @@
 ﻿angular.module('blusecur.mapa.controllers', [])
 
-.controller('TrackMapTodoCtrl', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, store, jwtHelper, $ionicModal, CrossingService, VesselService, CrewService, ContactsService, LovsService, LocationService, uiGmapGoogleMapApi, $http) {
+.controller('TrackMapTodoCtrl', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http) {
     //PROVISIONAL""
     $rootScope.estadosParking = {};
     $rootScope.estadosBici = {};
@@ -74,7 +74,6 @@
             case 5:
                 return "<div id='iw-container'><div class='iw-title'><b>Hospital:</b> " + item.nombreHospital + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Dirección:</b> " + item.direccionCompleta + "</li><li type='square'><b>Teléfono:<b> " + item.telefono + "</li></ul><a href='" + item.web + "' class='button' target='_blank'><b>Página web:</b></a></div><div class='iw-bottom-gradient'></div></div>";
             case 6:
-                return "<div id='iw-container'><div class='iw-title'><b>Parada de Bilbobus:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Abreviatura:</b> " + item.abreviatura + "</li></ul><table border='1' style='width:100%' border-spacing='5px' ><tr><th>Id de Linea</th><th>Nombre de Linea</th><th>Tiempo Restante</th></tr>";
                 var inicial = "<div><h3><b>Parada de Bilbobus:</b> " + item.nombreParada + "</h3><br><b>Abreviatura:</b><table border='1' style='width:100%' border-spacing='5px' ><tr><th>Id de Linea</th><th>Nombre de Linea</th><th>Tiempo Restante</th></tr>" + item.abreviatura;
                 if (item.id in $rootScope.estadosBilbobus) {
                     var tiempos = $rootScope.estadosBilbobus[item.id];
@@ -198,7 +197,16 @@
             });
         }).error(function (data, status) {
             console.log(status);
-            alert("Error al obtener información, compruebe su conexión a Internet");
+            var error = function () {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error al obtener la información',
+                    template: 'Ha ocurrido un error al obtener la información. Por favor, compruebe su conexión a internet.'
+                });
+
+                alertPopup.then(function (res) {
+                });
+            };
+            error();
         }).finally(function () {
             if(tipo ===2)
             {
@@ -211,17 +219,17 @@
         });
     };
 
-    obtenerInfo("http://localhost:16422/api/parkings/parkings/", 2);
-    obtenerInfo("http://localhost:16422/api/paradasmetro/paradasmetro/", 9);
-    obtenerInfo("http://localhost:16422/api/puntosbici/puntosbici/", 11);
-    obtenerInfo("http://localhost:16422/api/paradastranvia/paradastranvia/", 10);
-    obtenerInfo("http://localhost:16422/api/paradaseuskotren/paradaseuskotren/", 8);
-    obtenerInfo("http://localhost:16422/api/paradasbizkaibus/paradasbizkaibus/", 7);
-    obtenerInfo("http://localhost:16422/api/paradasbilbo/paradasbilbo/", 6);
-    obtenerInfo("http://localhost:16422/api/incidencias/fecha/", 3);
-    obtenerInfo("http://localhost:16422/api/hospitales/hospitales/", 5);
-    obtenerInfo("http://localhost:16422/api/farmacias/farmacias/", 1);
-    obtenerInfo("http://localhost:16422/api/centros/centros/", 4);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/parkings/parkings/", 2);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasmetro/paradasmetro/", 9);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/puntosbici/puntosbici/", 11);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradastranvia/paradastranvia/", 10);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradaseuskotren/paradaseuskotren/", 8);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbizkaibus/paradasbizkaibus/", 7);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbilbo/paradasbilbo/", 6);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/incidencias/fecha/", 3);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/hospitales/hospitales/", 5);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/farmacias/farmacias/", 1);
+    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/centros/centros/", 4);
 
     //CREACION DEL MENU DE MARKERS
     function CrearLeyenda(controlesDiv, map) {
@@ -252,7 +260,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (parkings.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/parkings/parkings/", 2);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/parkings/parkings/", 2);
                 }
                 else {
                     for (var i = 0; i < parkings.length; i++) {
@@ -290,7 +298,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (metro.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/paradasmetro/paradasmetro/", 9);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasmetro/paradasmetro/", 9);
                 }
                 else {
                     for (var i = 0; i < metro.length; i++) {
@@ -328,7 +336,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (bicis.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/puntosbici/puntosbici/", 11);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/puntosbici/puntosbici/", 11);
                 }
                 else {
                     for (var i = 0; i < bicis.length; i++) {
@@ -366,7 +374,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (tranvia.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/paradastranvia/paradastranvia/", 10);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradastranvia/paradastranvia/", 10);
                 }
                 else {
                     for (var i = 0; i < tranvia.length; i++) {
@@ -404,7 +412,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (euskotren.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/paradaseuskotren/paradaseuskotren/", 8);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradaseuskotren/paradaseuskotren/", 8);
                 }
                 else {
                     for (var i = 0; i < euskotren.length; i++) {
@@ -442,7 +450,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (bizkaibus.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/paradasbizkaibus/paradasbizkaibus/", 7);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbizkaibus/paradasbizkaibus/", 7);
                 }
                 else {
                     for (var i = 0; i < bizkaibus.length; i++) {
@@ -480,7 +488,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (bilbobus.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/paradasbilbo/paradasbilbo/", 7);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbilbo/paradasbilbo/", 7);
                 }
                 else {
                     for (var i = 0; i < bilbobus.length; i++) {
@@ -518,7 +526,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (incidencias.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/incidencias/fecha/", 3);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/incidencias/fecha/", 3);
                 }
                 else {
                     for (var i = 0; i < incidencias.length; i++) {
@@ -556,7 +564,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (hospitales.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/hospitales/hospitales/", 5);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/hospitales/hospitales/", 5);
                 }
                 else {
                     for (var i = 0; i < hospitales.length; i++) {
@@ -594,7 +602,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (farmacias.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/farmacias/farmacias/", 7);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/farmacias/farmacias/", 7);
                 }
                 else {
                     for (var i = 0; i < farmacias.length; i++) {
@@ -632,7 +640,7 @@
             if (this.checked) {
                 // SI ESTA MARCADO
                 if (centros.length < 1) {
-                    obtenerInfo("http://localhost:16422/api/centros/centros/", 4);
+                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/centros/centros/", 4);
                 }
                 else {
                     for (var i = 0; i < centros.length; i++) {
