@@ -431,6 +431,7 @@
                     {
                         calcularRuta($rootScope.posActual, $rootScope.destinoEnrutado, $rootScope.modo);
                         $rootScope.obtenerTodaInfo();
+                        $rootScope.rutaRealizada = true;
                     }
                     else
                     {
@@ -445,6 +446,7 @@
                                         var destino = results[0].geometry.location;
                                         calcularRuta(puntoLocalizacion, destino, $rootScope.modo);
                                         $rootScope.obtenerTodaInfo();
+                                        $rootScope.rutaRealizada = true;
                                     }
                                 });
 
@@ -649,13 +651,13 @@
                     if ($rootScope.conClick === true) {
                         calcularRuta($rootScope.posActual, $rootScope.destinoEnrutado, $rootScope.modo);
                         $rootScope.obtenerTodaInfo();
+                        $rootScope.rutaRealizada = true;
                     }
                     else {
                         var geocoder = new google.maps.Geocoder();
                         geocoder.geocode({ 'address': $rootScope.origenNombre }, function (results, status) {
                             if (status == google.maps.GeocoderStatus.OK) {
                                 //alert(results[0].geometry.location);
-                                console.log("aqui -----2");
                                 var puntoLocalizacion = results[0].geometry.location;
                                 $rootScope.origenEnrutado = puntoLocalizacion;
                                 geocoder.geocode({ 'address': $rootScope.origenDestino }, function (results, status) {
@@ -663,7 +665,7 @@
                                         var destino = results[0].geometry.location;
                                         calcularRuta(puntoLocalizacion, destino, $rootScope.modo);
                                         $rootScope.obtenerTodaInfo();
-                                        console.log("aqui -----3");
+                                        $rootScope.rutaRealizada = true;
 
                                     }
                                 });

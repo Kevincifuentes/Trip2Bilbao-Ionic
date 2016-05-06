@@ -1,7 +1,7 @@
 ﻿angular.module('blusecur.navigation.controllers', [])
 
-.controller('NavigationCtrl', function ($scope, $rootScope, $compile, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $cordovaNetwork) {
-    console.log($rootScope.origenEnrutado+" "+$rootScope.parkingEnrutado+ " "+ $rootScope.destinoEnrutado);
+.controller('NavigationCtrl', function ($scope, $rootScope, $compile, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $cordovaNetwork, $cordovaGeolocation) {
+    console.log($rootScope.origenEnrutado+" "+$rootScope.parkingEnrutado+ " "+ $rootScope.destinoEnrutado+ " "+ $rootScope.modo+ " "+ $rootScope.modoSegundo);
     var map;
     var panorama;
 
@@ -15,7 +15,7 @@
         {
             berkeley = $rootScope.posActual;
         }
-        var sv = new google.maps.StreetViewService();
+        $scope.sv = new google.maps.StreetViewService();
 
         panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'));
 
@@ -27,13 +27,13 @@
         });
 
         // Set the initial Street View camera to the center of the map
-        sv.getPanorama({ location: berkeley, radius: 50 }, processSVData);
-
+        $scope.sv.getPanorama({ location: berkeley, radius: 50 }, processSVData);
+        
         // Look for a nearby Street View panorama when the map is clicked.
         // getPanoramaByLocation will return the nearest pano when the
         // given radius is 50 meters or less.
         map.addListener('click', function (event) {
-            sv.getPanorama({ location: event.latLng, radius: 50 }, processSVData);
+            $scope.sv.getPanorama({ location: event.latLng, radius: 50 }, processSVData);
         });
     }
 
@@ -80,6 +80,27 @@
             screen.unlockOrientation();
         }
     });
+
+    var watchOptions = {
+        timeout: 3000,
+        enableHighAccuracy: true, // may cause errors if true
+        maximumAge:600000
+    };
+
+    var watch = $cordovaGeolocation.watchPosition(watchOptions);
+    watch.then(
+      null,
+      function (err) {
+          // error
+          alert('code: ' + err.code + '\n' +
+      'message: ' + err.message + '\n');
+      },
+      function (position) {
+          var lat = position.coords.latitude;
+          var long = position.coords.longitude;
+          console.log("Alohas");
+          $scope.sv.getPanorama({ location: new google.maps.LatLng(lat, long), radius: 50 }, processSVData);
+      });
 
     function enrutar(origen, destino, modo, directionService, directionDisplay)
     {
