@@ -1,11 +1,17 @@
 ﻿angular.module('blusecur.mapa.controllers', [])
 
-.controller('TrackMapTodoCtrl', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http) {
+.controller('TrackMapTodoCtrl', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $ionicLoading) {
+
+    $ionicLoading.show({
+        content: 'Cargando...',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0
+    });
+
     //PROVISIONAL""
-    $rootScope.estadosParking = {};
-    $rootScope.estadosBici = {};
-    $rootScope.estadosParking["Karmelo"] = 10;
-    $rootScope.estadosBilbobus = {};
+    $rootScope.finalizado = false;
     ////
     //Crear elecciones
 
@@ -74,14 +80,22 @@
             case 5:
                 return "<div id='iw-container'><div class='iw-title'><b>Hospital:</b> " + item.nombreHospital + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Dirección:</b> " + item.direccionCompleta + "</li><li type='square'><b>Teléfono:<b> " + item.telefono + "</li></ul><a href='" + item.web + "' class='button' target='_blank'><b>Página web:</b></a></div><div class='iw-bottom-gradient'></div></div>";
             case 6:
-                var inicial = "<div><h3><b>Parada de Bilbobus:</b> " + item.nombreParada + "</h3><br><b>Abreviatura:</b><table border='1' style='width:100%' border-spacing='5px' ><tr><th>Id de Linea</th><th>Nombre de Linea</th><th>Tiempo Restante</th></tr>" + item.abreviatura;
+                var inicial = "<div id='iw-container'><div class='iw-title'><b>Parada de Bilbobus:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Abreviatura:</b>" + item.abreviatura + "</li></ul>";
+                inicial = inicial + "<hr><table border='1' style='width:100%'><thead><tr><th><b>Id de Linea<b></th><th><b>Nombre de Linea<b></th><th><b>Tiempo Restante<b></th></tr></thead><tbody>";
                 if (item.id in $rootScope.estadosBilbobus) {
-                    var tiempos = $rootScope.estadosBilbobus[item.id];
-                    for (var i = 0; i < tiempos.length; i++) {
-                        inicial = inicial + "<tr><td>" + tiempos[i].id + "</td><td>" + tiempos[i].linea + "</td><td>" + tiempos[i].tiempo + "</td></tr>";
+                    for (var index in $rootScope.estadosBilbobus[item.id]) {
+                        if($rootScope.estadosBilbobus[item.id][index].tiempo === -1)
+                        {
+                            inicial = inicial + "<tr><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].id + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].linea + "</td><td align='center'>En parada</td></tr>";
+                        }
+                        else
+                        {
+                            inicial = inicial + "<tr><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].id + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].linea + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].tiempo + "</td></tr>";
+                        }
+                       
                     }
                 }
-                inicial = inicial + "</table></div><div class='iw-bottom-gradient'></div></div>";
+                inicial = inicial + "</tbody></table></div><div class='iw-bottom-gradient'></div></div>";
                 return inicial;
             case 7:
                 return "<div id='iw-container'><div class='iw-title'><b>Parada de Bizkaibus:</b> " + item.nombreParada + "</div></div>";
@@ -110,7 +124,7 @@
         }
     }
 
-    obtenerInfo = function (path, tipo) {
+    var obtenerInfo = function (path, tipo) {
         $http({ method: 'GET', url: path})
         .success(function (data, status) {
             //si la petición ha sido correcta, tendremos una lista de objetos JSON
@@ -207,29 +221,88 @@
                 });
             };
             error();
-        }).finally(function () {
-            if(tipo ===2)
-            {
-                var bounds = new google.maps.LatLngBounds();
-                for (var i = 0; i < marcadores.length; i++) {
-                    bounds.extend(marcadores[i]);
+        }).then(function () {
+            console.log("llego al finally");
+                switch (tipo) {
+                    case 1:
+                        if (centros.length === 0)
+                        {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/centros/centros/", 4);
+                        }
+                        break;
+
+                    case 2:
+                        if (metro.length === 0)
+                        {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasmetro/paradasmetro/", 9);
+                        }
+                        break;
+
+                    case 3:
+                        if (hospitales.length === 0)
+                        {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/hospitales/hospitales/", 5);
+                        }
+                        break;
+
+                    case 4:
+                        $ionicLoading.hide();
+                        break;
+
+                    case 5:
+                        if (farmacias.length === 0) {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/farmacias/farmacias/", 1);
+                        }
+                        break;
+
+                    case 6:
+                        if (incidencias.length === 0) {
+                        obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/incidencias/fecha/", 3);
+                        }
+                        break;
+
+                    case 7:
+                        if (bilbobus.length === 0)
+                        {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbilbo/paradasbilbo/", 6);
+                        }
+                        break;
+
+                    case 8:
+                        if (bizkaibus.length === 0)
+                        {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbizkaibus/paradasbizkaibus/", 7);
+                        }
+                        break;
+
+                    case 9:
+                        if (bicis.length === 0)
+                        {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/puntosbici/puntosbici/", 11);
+                        }
+                        break;
+
+                    case 10:
+                        if (euskotren.length === 0)
+                            {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradaseuskotren/paradaseuskotren/", 8);
+                            }
+                        break;
+
+                    case 11:
+                    if(tranvia.length === 0)
+                    {
+                        obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradastranvia/paradastranvia/", 10);
+                    }
+                        
+                        break;
                 }
-                map.fitBounds(bounds);
-            }
+            
         });
     };
 
     obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/parkings/parkings/", 2);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasmetro/paradasmetro/", 9);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/puntosbici/puntosbici/", 11);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradastranvia/paradastranvia/", 10);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradaseuskotren/paradaseuskotren/", 8);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbizkaibus/paradasbizkaibus/", 7);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbilbo/paradasbilbo/", 6);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/incidencias/fecha/", 3);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/hospitales/hospitales/", 5);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/farmacias/farmacias/", 1);
-    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/centros/centros/", 4);
+    
 
     //CREACION DEL MENU DE MARKERS
     function CrearLeyenda(controlesDiv, map) {
@@ -248,25 +321,22 @@
 
         //CHECKBOX DE PARKINGS
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "parking";
         checkbox.checked = true;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (parkings.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/parkings/parkings/", 2);
-                }
-                else {
                     for (var i = 0; i < parkings.length; i++) {
                         parkings[i].setMap(map);
                     }
-                }
+                
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < parkings.length; i++) {
@@ -286,25 +356,21 @@
 
         //CHECKBOX DE METRO
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "metro";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (metro.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasmetro/paradasmetro/", 9);
-                }
-                else {
                     for (var i = 0; i < metro.length; i++) {
                         metro[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < metro.length; i++) {
@@ -324,25 +390,21 @@
 
         //CHECKBOX DE BICIS
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "bicis";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (bicis.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/puntosbici/puntosbici/", 11);
-                }
-                else {
                     for (var i = 0; i < bicis.length; i++) {
                         bicis[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < bicis.length; i++) {
@@ -362,25 +424,21 @@
 
         //CHECKBOX DE TRANVIA
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "tranvia";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (tranvia.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradastranvia/paradastranvia/", 10);
-                }
-                else {
                     for (var i = 0; i < tranvia.length; i++) {
                         tranvia[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < tranvia.length; i++) {
@@ -400,25 +458,20 @@
 
         //CHECKBOX DE EUSKOTREN
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "euskotren";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
-                // SI ESTA MARCADO
-                if (euskotren.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradaseuskotren/paradaseuskotren/", 8);
-                }
-                else {
                     for (var i = 0; i < euskotren.length; i++) {
                         euskotren[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < euskotren.length; i++) {
@@ -438,25 +491,21 @@
 
         //CHECKBOX DE BIZKAIBUS
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "bizkaibus";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (bizkaibus.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbizkaibus/paradasbizkaibus/", 7);
-                }
-                else {
                     for (var i = 0; i < bizkaibus.length; i++) {
                         bizkaibus[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < bizkaibus.length; i++) {
@@ -476,25 +525,21 @@
 
         //CHECKBOX DE BILBOBUS
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "bilbobus";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (bilbobus.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradasbilbo/paradasbilbo/", 7);
-                }
-                else {
                     for (var i = 0; i < bilbobus.length; i++) {
                         bilbobus[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < bilbobus.length; i++) {
@@ -514,25 +559,21 @@
 
         //CHECKBOX DE INCIDENCIAS
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "incidencias";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (incidencias.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/incidencias/fecha/", 3);
-                }
-                else {
                     for (var i = 0; i < incidencias.length; i++) {
                         incidencias[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < incidencias.length; i++) {
@@ -552,25 +593,21 @@
 
         //CHECKBOX DE HOSPITALES
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "hospitales";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (hospitales.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/hospitales/hospitales/", 5);
-                }
-                else {
                     for (var i = 0; i < hospitales.length; i++) {
                         hospitales[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < hospitales.length; i++) {
@@ -590,25 +627,21 @@
 
         //CHECKBOX DE FARMACIAS
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "farmacias";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
             // access properties using this keyword
+            event.stopPropagation();
             if (this.checked) {
-                // SI ESTA MARCADO
-                if (farmacias.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/farmacias/farmacias/", 7);
-                }
-                else {
+                // SI ESTA MARCADo
                     for (var i = 0; i < farmacias.length; i++) {
                         farmacias[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < farmacias.length; i++) {
@@ -628,25 +661,21 @@
 
         //CHECKBOX DE Centros 
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "centros";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                if (centros.length < 1) {
-                    obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/centros/centros/", 4);
-                }
-                else {
                     for (var i = 0; i < centros.length; i++) {
                         centros[i].setMap(map);
                     }
-                }
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < centros.length; i++) {
@@ -666,14 +695,15 @@
 
         //CHECKBOX DE Favoritos 
         var checkbox = document.createElement('input');
-        checkbox.style.width = '15px';
-        checkbox.style.height = '15px';
+        checkbox.style.width = '20px';
+        checkbox.style.height = '20px';
         checkbox.type = "checkbox";
         checkbox.name = "name";
         checkbox.value = "value";
         checkbox.id = "favs";
         checkbox.checked = false;
-        checkbox.onclick = function () {
+        checkbox.onchange = function (event) {
+            event.stopPropagation();
             // access properties using this keyword
             if (this.checked) {
             console.log("marcado");
@@ -704,14 +734,6 @@
 
         controlesUI.appendChild(checkbox);
         controlesUI.appendChild(label);
-
-        google.maps.event.addDomListener(controlesUI, 'click', function () {
-            if (controlesUI.style.fontWeight == 'bold') {
-                controlesUI.style.fontWeight = 'normal';
-            } else {
-                controlesUI.style.fontWeight = 'bold';
-            }
-        });
 
         google.maps.event.addDomListener(controlesUI, 'mouseover', function () {
             controlesUI.style.backgroundColor = '#e8e8e8';

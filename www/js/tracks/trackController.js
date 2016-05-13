@@ -1392,15 +1392,10 @@
             mostrarInformacion($rootScope.hospitales, 5);
             mostrarInformacion($rootScope.farmacias, 1);
             mostrarInformacion($rootScope.centrosSalud, 4);
-            if($rootScope.conClick === true)
-            {
-                $rootScope.modo = $rootScope.anteriorModo;
 
-            }
             if ($state.current.name === "menu.track-mapFav") {
                 $rootScope.map.setZoom(13);
                 $state.go('menu.track-map');
-
             }
         };
 
@@ -1413,15 +1408,17 @@
                 var contentString = formatearInfo(item, tipo);
 
                 var infowindow = new google.maps.InfoWindow({
-                    content: contentString
+                    maxWidth : 350
                 });
 
                 var marker = new google.maps.Marker({
                     position: myLatlng,
                     title: contentString,
                     animation: google.maps.Animation.DROP,
-                    icon: iconos[tipo]
+                    icon: iconos[tipo],
+                    content: contentString
                 });
+                marker.infowindow = infowindow;
 
                 switch (tipo) {
                     case 1:
@@ -1474,8 +1471,9 @@
                 }
 
                 //se añade un evento al marcador
-                marker.addListener('click', function (event) {
-                    infowindow.open($rootScope.map, marker);
+                google.maps.event.addListener(marker, 'click', function () {
+                    infowindow.setContent(this.content);
+                    infowindow.open($rootScope.map, this);
                 });
 
                 marker.setMap($rootScope.map);
@@ -1502,15 +1500,20 @@
                 case 5:
                     return "<div id='iw-container'><div class='iw-title'><b>Hospital:</b> " + item.nombreHospital + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Dirección:</b> " + item.direccionCompleta + "</li><li type='square'><b>Teléfono:<b> " + item.telefono + "</li></ul><a href='" + item.web + "' class='button' target='_blank'><b>Página web:</b></a></div><div class='iw-bottom-gradient'></div></div>";
                 case 6:
-                    var inicial = "<div id='iw-container'><div class='iw-title'><b>Parada de Bilbobus:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Abreviatura:</b>" + item.abreviatura +"</li></ul>";
-                    inicial = inicial + "<table border='1' style='width:100%' border-spacing='5px' ><tr><th>Id de Linea</th><th>Nombre de Linea</th><th>Tiempo Restante</th></tr>";
+                    var inicial = "<div id='iw-container'><div class='iw-title'><b>Parada de Bilbobus:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Abreviatura:</b>" + item.abreviatura + "</li></ul>";
+                    inicial = inicial + "<hr><table border='1' style='width:100%'><thead><tr><th><b>Id de Linea<b></th><th><b>Nombre de Linea<b></th><th><b>Tiempo Restante<b></th></tr></thead><tbody>";
                     if (item.id in $rootScope.estadosBilbobus) {
-                        var tiempos = $rootScope.estadosBilbobus[item.id];
-                        for (var i = 0; i < tiempos.length; i++) {
-                            inicial = inicial + "<tr><td>" + tiempos[i].id + "</td><td>" + tiempos[i].linea + "</td><td>" + tiempos[i].tiempo + "</td></tr>";
+                        for (var index in $rootScope.estadosBilbobus[item.id]) {
+                            if ($rootScope.estadosBilbobus[item.id][index].tiempo === -1) {
+                                inicial = inicial + "<tr><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].id + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].linea + "</td><td align='center'>En parada</td></tr>";
+                            }
+                            else {
+                                inicial = inicial + "<tr><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].id + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].linea + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].tiempo + "</td></tr>";
+                            }
+
                         }
                     }
-                    inicial = inicial + "</table></div><div class='iw-bottom-gradient'></div></div>";
+                    inicial = inicial + "</tbody></table></div><div class='iw-bottom-gradient'></div></div>";
                     return inicial;
                 case 7:
                     return "<div id='iw-container'><div class='iw-title'><b>Parada de Bizkaibus:</b> " + item.nombreParada + "</div></div>";

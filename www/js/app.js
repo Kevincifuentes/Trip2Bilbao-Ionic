@@ -21,7 +21,18 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     //API_URL: 'http://api.blusecur.net'
 })
 
-.run(function ($ionicPlatform, $rootScope, $state, jwtHelper) {
+.run(function ($ionicPlatform, $rootScope, $state, $ionicLoading, jwtHelper) {
+    $ionicLoading.show({
+            content: 'Cargando...',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0
+        });
+    $rootScope.estadosParking = {};
+    $rootScope.estadosBilbobus = {};
+    $rootScope.estadosBici = {};
+    $rootScope.meteo = [];
     $rootScope.primera = true;
     /*$rootScope.$on('$stateChangeStart', function (e, to, toParams, fromState, fromParams) {
 
@@ -33,6 +44,130 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
             }
         }
     });*/
+    //Inicializo el WebSocket al puerto e Ip del ActiveMQ. Se utilizará un servicio STOMP.
+    $rootScope.activeMQWorker = function() {
+            var w = new Worker("js/WebWorker/activeMQ.js");
+            w.onmessage = function (event) {
+                var lines = event.data;
+                var tipo = event.data[4].substring(lines[4].indexOf(":") + 1, lines[4].length);
+
+                switch (tipo) {
+                    case "TiempoCiudad":
+                        if (window.DOMParser) {
+                            $rootScope.meteo = [];
+
+                            parser = new DOMParser();
+                            xmlDoc = parser.parseFromString(lines[9], "text/xml");
+                            var nombreCiudad = xmlDoc.getElementsByTagName("Nombre")[0].childNodes[0].nodeValue;
+                            var descripcionGeneralHES = xmlDoc.getElementsByTagName("ES")[0].childNodes[0].nodeValue;
+                            var descripcionGeneralHEU = xmlDoc.getElementsByTagName("EU")[0].childNodes[0].nodeValue;
+                            var descripcionHES = xmlDoc.getElementsByTagName("DescripcionES")[0].childNodes[0].nodeValue;
+                            var descripcionHEU = xmlDoc.getElementsByTagName("DescripcionEU")[0].childNodes[0].nodeValue;
+                            var tempMaxH = xmlDoc.getElementsByTagName("TempMax")[0].childNodes[0].nodeValue;
+                            var tempMinH = xmlDoc.getElementsByTagName("TempMin")[0].childNodes[0].nodeValue;
+
+                            var descripcionGeneralMES = xmlDoc.getElementsByTagName("ES")[1].childNodes[0].nodeValue;
+                            var descripcionGeneralMEU = xmlDoc.getElementsByTagName("EU")[1].childNodes[0].nodeValue;
+                            var descripcionMES = xmlDoc.getElementsByTagName("DescripcionES")[1].childNodes[0].nodeValue;
+                            var descripcionMEU = xmlDoc.getElementsByTagName("DescripcionEU")[1].childNodes[0].nodeValue;
+                            var tempMaxM = xmlDoc.getElementsByTagName("TempMax")[1].childNodes[0].nodeValue;
+                            var tempMinM = xmlDoc.getElementsByTagName("TempMin")[1].childNodes[0].nodeValue;
+
+                            var descripcionGeneralPES = xmlDoc.getElementsByTagName("ES")[2].childNodes[0].nodeValue;
+                            var descripcionGeneralPEU = xmlDoc.getElementsByTagName("EU")[2].childNodes[0].nodeValue;
+                            var descripcionPES = xmlDoc.getElementsByTagName("DescripcionES")[2].childNodes[0].nodeValue;
+                            var descripcionPEU = xmlDoc.getElementsByTagName("DescripcionEU")[2].childNodes[0].nodeValue;
+                            var tempMaxP = xmlDoc.getElementsByTagName("TempMax")[2].childNodes[0].nodeValue;
+                            var tempMinP = xmlDoc.getElementsByTagName("TempMin")[2].childNodes[0].nodeValue;
+
+                            var hoy = { gES: descripcionGeneralHES, gEU: descripcionGeneralHEU, dES: descripcionHES, dEU: descripcionHEU, tMax: tempMaxH, tMin: tempMinH };
+                            var manana = { gES: descripcionGeneralMES, gEU: descripcionGeneralMEU, dES: descripcionMES, dEU: descripcionMEU, tMax: tempMaxM, tMin: tempMinM };
+                            var pasado = { gES: descripcionGeneralPES, gEU: descripcionGeneralPEU, dES: descripcionPES, dEU: descripcionPEU, tMax: tempMaxP, tMin: tempMinP };
+                            console.log(hoy);
+                            console.log(manana);
+                            console.log(pasado);
+                            $rootScope.meteo.push(hoy);
+                            $rootScope.meteo.push(manana);
+                            $rootScope.meteo.push(pasado);
+
+                        }
+                        break;
+                    case "TiemposLinea":
+                        if (window.DOMParser) {
+                            parser = new DOMParser();
+                            xmlDoc = parser.parseFromString(lines[9], "text/xml");
+                            //console.log(lines[9]);
+                            var id = xmlDoc.getElementsByTagName("TiemposLinea")[0].getAttribute("Id");
+                            var nombre = xmlDoc.getElementsByTagName("TiemposLinea")[0].getAttribute("Nombre");
+
+                            var paradas = xmlDoc.getElementsByTagName("Paradas")[0].childNodes;
+                            for (var i = 0; i < paradas.length; i++) {
+                                var idP = paradas[i].getElementsByTagName("Id")[0].childNodes[0].nodeValue;
+                                var tiempo = paradas[i].getElementsByTagName("TiempoRestante")[0].childNodes[0].nodeValue;
+                                var tiempoLineaEnParada = { id: id, linea: nombre, tiempo: tiempo };
+                                if (idP in $rootScope.estadosBilbobus) {
+                                    $rootScope.estadosBilbobus[idP][id] = tiempoLineaEnParada;
+                                    console.log($rootScope.estadosBilbobus[idP][id]);
+                                    //console.log($rootScope.estadosBilbobus[idP][id]);
+                                    /*var array = $rootScope.estadosBilbobus[idP];
+                                    for (var z = 0; z < array.length; i++) {
+                                        if (array[z].id === id) {
+                                            //$rootScope.estadosBilbobus[idP].splice(z, 1);
+                                            $rootScope.estadosBilbobus[idP].push(tiempoLineaEnParada);
+                                            break;
+                                        }
+                                    }*/
+                                }
+                                else {
+                                    $rootScope.estadosBilbobus[idP] = {};
+                                    $rootScope.estadosBilbobus[idP][id] = tiempoLineaEnParada;
+                                }
+                            }
+                        }
+                        break;
+                    case "Parkings":
+                        if (window.DOMParser) {
+                            parser = new DOMParser();
+                            //console.log(lines[10]);
+                            xmlDoc = parser.parseFromString(lines[10], "text/xml");
+                            var nombre = xmlDoc.getElementsByTagName("Nombre")[0].childNodes[0].nodeValue;
+                            var disponibilidad = xmlDoc.getElementsByTagName("Disponibilidad")[0].childNodes[0].nodeValue;
+                            //estadoParkings[nombre] = disponibilidad;
+                            //console.log(nombre + " " +disponibilidad);
+                        }
+                        break;
+
+                    case "Deusto":
+                        if (window.DOMParser) {
+                            parser = new DOMParser();
+                            xmlDoc = parser.parseFromString(lines[10], "text/xml");
+                            var general = xmlDoc.getElementsByTagName("General")[0].childNodes[0].nodeValue;
+                            var dbs = xmlDoc.getElementsByTagName("Dbs")[0].childNodes[0].nodeValue;
+                            //estadoParkings["UD: DBS"] = dbs;
+                            //estadoParkings["UD: General"] = general;
+                        }
+                        break;
+
+                    case "Bicis":
+                        if (window.DOMParser) {
+                            //Lo convertimos mediante un parseador
+                            var parser = new DOMParser();
+                            //Obtenemos solo el XML
+                            var xmlDoc = parser.parseFromString(lines[10], "text/xml");
+                            //Se obtienen los datos que interesan
+                            var nombre = xmlDoc.getElementsByTagName("Nombre")[0].childNodes[0].nodeValue;
+                            var disponibilidadbicis = xmlDoc.getElementsByTagName("BicisLibres")[0].childNodes[0].nodeValue;
+                            var disponibilidadAnclajes = xmlDoc.getElementsByTagName("DisponibilidadAnclaje")[0].childNodes[0].nodeValue;
+                            //estadosBici[nombre] = "<b>Bicis Libres: </b>" + disponibilidadbicis + " / <b> Anclajes Libres: </b>" + disponibilidadAnclajes;
+                        }
+                        break;
+                    default:
+                }
+            };
+    }
+    $rootScope.activeMQWorker();
+
+    
 
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -55,11 +190,11 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
 
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
 
-    uiGmapGoogleMapApiProvider.configure({
+   /* uiGmapGoogleMapApiProvider.configure({
         key: 'AIzaSyCgJH62TeOB_tnB2EOhMkkDJoP5cVR79RQ',
         v: '3.20',
         libraries: 'weather,geometry,visualization,places'
-    });
+    });*/
     
     $stateProvider
     .state('menu', {
@@ -71,7 +206,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
 
     .state('menu.home', {
         url: '/home',
-        cache: false,
+        cache: true,
         views: {
             'menuContent': {
                 templateUrl: 'templates/home/home.html',

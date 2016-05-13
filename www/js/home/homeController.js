@@ -1,11 +1,9 @@
 ﻿angular.module('blusecur.home.controllers', [])
 
-.controller('HomeCtrl', function ($scope, $rootScope, $compile, $state, $ionicModal, $ionicPopup) {
+.controller('HomeCtrl', function ($scope, $rootScope, $compile, $state, $ionicModal, $ionicPopup, $ionicLoading) {
+    
     $rootScope.destinoDesdeFav = null;
     $rootScope.enrutado = false;
-    $rootScope.estadosParking = {};
-    $rootScope.estadosBilbobus = {};
-    $rootScope.estadosBici = {};
     $rootScope.modo = "coche";
     $rootScope.transporte = "coche";
     $rootScope.correctoFav = function (res) {
@@ -185,7 +183,7 @@
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode({ 'address': punto }, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-                alert(results[0].geometry.location);
+                //alert(results[0].geometry.location);
                 var puntoLocalizacion = results[0].geometry.location;
                 if(marker !== undefined)
                 {
@@ -301,4 +299,5 @@
         $rootScope.destinoDesdeFav = new google.maps.LatLng(latitud, longitud);
         $state.go('menu.track-map');
     }
+    $ionicLoading.hide();
 });
