@@ -1,4 +1,4 @@
-mobile-app
+Trip2Bilbao
 ==========
 
-Code for the ProjectX mobile app.
+Ionic Application about the city of Bilbao
