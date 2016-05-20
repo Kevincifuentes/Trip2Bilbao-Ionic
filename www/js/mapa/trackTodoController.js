@@ -1,6 +1,6 @@
-﻿angular.module('blusecur.mapa.controllers', [])
+﻿angular.module('trip2bilbao.mapa.controllers', [])
 
-.controller('TrackMapTodoCtrl', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $ionicLoading) {
+.controller('TrackMapTodoCtrl', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $ionicLoading, $compile, activeMQ) {
 
     $ionicLoading.show({
         content: 'Cargando...',
@@ -84,14 +84,7 @@
                 inicial = inicial + "<hr><table border='1' style='width:100%'><thead><tr><th><b>Id de Linea<b></th><th><b>Nombre de Linea<b></th><th><b>Tiempo Restante<b></th></tr></thead><tbody>";
                 if (item.id in $rootScope.estadosBilbobus) {
                     for (var index in $rootScope.estadosBilbobus[item.id]) {
-                        if($rootScope.estadosBilbobus[item.id][index].tiempo === -1)
-                        {
-                            inicial = inicial + "<tr><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].id + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].linea + "</td><td align='center'>En parada</td></tr>";
-                        }
-                        else
-                        {
-                            inicial = inicial + "<tr><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].id + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].linea + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].tiempo + "</td></tr>";
-                        }
+                            inicial = inicial + "<tr><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].id + "</td><td align='center'>" + $rootScope.estadosBilbobus[item.id][index].linea + "</td><td align='center'>{{estadosBilbobus["+item.id+"]["+index+"].tiempo}}</td></tr>";
                        
                     }
                 }
@@ -132,10 +125,12 @@
             angular.forEach(data, function (item, key) {
 
                 var contentString = formatearInfo(tipo, item);
+                var compiled = $compile(contentString)($rootScope);
                 var infowindow = new google.maps.InfoWindow({
-                    content: contentString,
+                    content: compiled[0],
                     maxWidth: 350
                 });
+                
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(item.latitud, item.longitud),
                     title: contentString,

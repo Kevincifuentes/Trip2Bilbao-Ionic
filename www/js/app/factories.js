@@ -1,4 +1,4 @@
-﻿angular.module('blusecur.factories', [])
+﻿angular.module('trip2bilbao.factories', [])
 
 .factory('iAd', function ($window) {
     var iAd = $window.iAd;

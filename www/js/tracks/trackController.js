@@ -1,4 +1,4 @@
-﻿angular.module('blusecur.track.controllers', [])
+﻿angular.module('trip2bilbao.track.controllers', [])
 
 .controller('TrackMapCtrl', function ($scope, $rootScope, $compile, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $cordovaNetwork) {
         console.log("primera vez");

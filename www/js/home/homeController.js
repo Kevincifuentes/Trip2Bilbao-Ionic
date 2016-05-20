@@ -1,7 +1,7 @@
-﻿angular.module('blusecur.home.controllers', [])
+﻿angular.module('trip2bilbao.home.controllers', [])
 
-.controller('HomeCtrl', function ($scope, $rootScope, $compile, $state, $ionicModal, $ionicPopup, $ionicLoading) {
-    
+.controller('HomeCtrl', function ($scope, $rootScope, $compile, $state, $ionicModal, $ionicPopup, $ionicLoading, activeMQ) {
+    activeMQ.inicializarActiveMQ();
     $rootScope.destinoDesdeFav = null;
     $rootScope.enrutado = false;
     $rootScope.modo = "coche";
@@ -207,7 +207,7 @@
             }
         });
     };
-    $rootScope.anadirFav = function(nombre, transporte, punto){
+    $rootScope.anadirFavH = function(nombre, transporte, punto){
         if(nombre !== undefined && transporte !== undefined && punto !== undefined)
         {
             //añadir Favorito

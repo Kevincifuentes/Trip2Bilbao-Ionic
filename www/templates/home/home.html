@@ -21,9 +21,9 @@
         </div>
         <ion-list>
             <ion-item class="item-thumbnail-left">
-                <img src="img/profile.gif">
-                <h2>Kevin Cifuentes</h2>
-                <p>sus favoritos..</p>
+                <img src="img/profile2.gif">
+                <h2>Favoritos del usuario</h2>
+                <p>Las ubicaciones guardadas</p>
             </ion-item>
             <ion-item ng-repeat="item in arrayFavoritos track by $index" class="item-button-right">
             <div ng-click="mostrarFavorito($index)">
@@ -89,7 +89,7 @@
                 </label>
                 <div id="favorito" style="width:100%;min-height: 200px;" name="favorito"></div>
                 <span class="input-group-btn">
-                    <button id="anadirFav" class="button icon-right ion-search button-dark" type="button" ng-click="anadirFav(nombre, transporte, puntoFav)">Añadir</button>
+                    <button id="anadirFav" class="button icon-right ion-search button-dark" type="button" ng-click="anadirFavH(nombre, transporte, puntoFav)">Añadir</button>
                 </span>
             </div>
             

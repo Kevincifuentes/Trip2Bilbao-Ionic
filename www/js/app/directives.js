@@ -1,4 +1,4 @@
-﻿angular.module('blusecur.directives', [])
+﻿angular.module('trip2bilbao.directives', [])
 
 .directive('myTabs', function () {
     return {

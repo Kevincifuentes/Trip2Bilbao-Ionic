@@ -1,11 +1,12 @@
-﻿ws = new WebSocket('wss://dev.mobility.deustotech.eu:61614?needClientAuth=true&amp;wantClientAuth=true&amp;transport.clientCertSubject=nms.client.170&amp;transport.clientCertPassword=trip2bilbao;transport.clientCertFilename=client.ks', 'stomp');
+﻿ws = new WebSocket('wss://dev.mobility.deustotech.eu:61614', 'stomp');
 
 //Notificar para la conexión
 ws.onopen = function () {
-    ws.send('CONNECT\n\n\0');
+    var seconds = new Date().getTime() / 1000;
+    ws.send('CONNECT\nclient-id:aplicacion'+seconds+'\n\n\0');
 
     //Notificar que nos suscribimos y a que nos suscribimos
-    ws.send('SUBSCRIBE\ndestination:/topic/PruebaEMISOR\nack:auto\nactivemq.retroactive:true\n\n\0');
+    ws.send('SUBSCRIBE\ndestination:/topic/PruebaEMISOR\nack:auto\nactivemq.subscriptionName:aplicacion\nactivemq.retroactive:true\n\n\0');
 };
 //En caso de mensaje de ejecutará la función
 ws.onmessage = function (e) {

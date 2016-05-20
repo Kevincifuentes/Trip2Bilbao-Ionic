@@ -1,4 +1,4 @@
-﻿angular.module('blusecur.navigation.controllers', [])
+﻿angular.module('trip2bilbao.navigation.controllers', [])
 
 .controller('NavigationCtrl', function ($scope, $rootScope, $compile, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $cordovaNetwork, $cordovaGeolocation, $compile) {
     
@@ -311,6 +311,7 @@
     if (window.screen.lockOrientation) {
         screen.lockOrientation('landscape');
         window.plugins.insomnia.keepAwake();
+        AndroidFullScreen.immersiveMode(function(){}, function(err){console.log("Error: "+err);});
     }
 
     $scope.$on("$destroy", function () {
@@ -318,6 +319,7 @@
             screen.lockOrientation('portrait');
             window.plugins.insomnia.allowSleepAgain();
             screen.unlockOrientation();
+            AndroidFullScreen.showSystemUI(function(){}, function(err){console.log("Error: "+err);});
         }
     });
 

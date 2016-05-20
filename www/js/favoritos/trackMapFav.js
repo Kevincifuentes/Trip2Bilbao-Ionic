@@ -1,4 +1,4 @@
-﻿angular.module('blusecur.favoritos.controllers', [])
+﻿angular.module('trip2bilbao.favoritos.controllers', [])
 
 .controller('TrackMapFav', function ($rootScope, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, $ionicModal, uiGmapGoogleMapApi, $http) {
     
