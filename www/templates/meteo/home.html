@@ -1,0 +1,50 @@
+﻿<ion-view view-title="Hoy">
+    <ion-nav-buttons side="right">
+        <!--<a style="color: black;" class="button button-icon icon ion-ios-trash-outline" ng-click="deleteCrew()"></a>-->
+    </ion-nav-buttons>
+    <ion-content scroll="true" data-tap-disabled="false">
+        <div class="list card">
+            <div class="item item-avatar">
+                <img src="img/meteo.png">
+                <h2>Tiempo para el día de hoy</h2>
+                <p>{{diahoy | date:'dd-MM-yyyy'}}</p>
+            </div>
+            <div class="item item-body">
+                <div class="row">
+                    <div class="col"><img height='50' width='50' src='img/cold.png' /><span id='spanHmax'>Min. <b>{{hoy.tMin}}</b>  °C</span></div>
+                    <div class="col"><img height='50' width='50' src='img/hot.png' /><span id='spanHmax'>Max. <b>{{hoy.tMax}}</b>  °C</span></div>
+                </div>
+            </div>
+            <div class="item item-body">
+                <h3>Descripción general</h3>
+                <h4>Castellano</h4>
+                <p>
+                    {{hoy.dES}}
+                </p>
+                <h4>Euskera</h4>
+                <p>
+                    {{hoy.dEU}}
+                </p>
+                <p>
+                    <!--<a href="#" class="subdued">1 Like</a>-->
+                </p>
+            </div>
+            <div class="item item-body">
+                <h3>Descripción específica</h3>
+                <h4>Castellano</h4>
+                <p>
+                    {{hoy.gES}}
+                </p>
+                <h4>Euskera</h4>
+                <p>
+                    {{hoy.gEU}}
+                </p>
+                <p>
+                    <!--<a href="#" class="subdued">1 Like</a>-->
+                </p>
+            </div>
+            
+
+        </div>
+    </ion-content>
+</ion-view>

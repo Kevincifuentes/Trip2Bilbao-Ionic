@@ -9,6 +9,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     'trip2bilbao.mapa.controllers',
     'trip2bilbao.favoritos.controllers',
     'trip2bilbao.navigation.controllers',
+    'trip2bilbao.meteo.controllers',
     'trip2bilbao.directives',
     'trip2bilbao.factories',
     'uiGmapgoogle-maps',
@@ -20,6 +21,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     //API_URL: 'http://10.45.1.84:8080'
     //API_URL: 'http://api.blusecur.net'
 })
+
 
 .service('activeMQ', ["$rootScope", function ($rootScope) {
     this.inicializarActiveMQ = function () {
@@ -154,6 +156,11 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
         };
         
     };
+
+}])
+.config(['$ionicConfigProvider', function($ionicConfigProvider) {
+
+    $ionicConfigProvider.tabs.position('bottom'); // other values: top
 
 }])
 
@@ -294,6 +301,70 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                 }
             }
     })
+    .state('menu.tabs', {
+        url: "/tab",
+        abstract : true,
+        views: {
+            'menuContent': {
+                templateUrl: "templates/meteo/tabs.html",
+                controller: 'MeteoCtrl',
+                data: {
+                    requiresLogin: false
+                }
+            }
+        }
+        
+    })
+    .state('menu.tabs.home', {
+        url: "/home",
+        views: {
+            'home-tab': {
+                templateUrl: "templates/meteo/home.html",
+                controller: 'MeteoCtrl'
+            }
+        }
+    })
+    .state('menu.tabs.facts', {
+        url: "/facts",
+        views: {
+            'home-tab': {
+                templateUrl: "templates/meteo/facts.html"
+            }
+        }
+    })
+    .state('menu.tabs.facts2', {
+        url: "/facts2",
+        views: {
+            'home-tab': {
+                templateUrl: "templates/meteo/facts2.html"
+            }
+        }
+    })
+    .state('menu.tabs.about', {
+        url: "/about",
+        views: {
+            'about-tab': {
+                templateUrl: "templates/meteo/about.html"
+            }
+        }
+    })
+    .state('menu.tabs.navstack', {
+        url: "/navstack",
+        views: {
+            'about-tab': {
+                templateUrl: "templates/meteo/nav-stack.html"
+            }
+        }
+    })
+    .state('menu.tabs.contact', {
+        url: "/contact",
+        views: {
+            'contact-tab': {
+                templateUrl: "templates/meteo/contact.html"
+            }
+        }
+    });
+
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/home');

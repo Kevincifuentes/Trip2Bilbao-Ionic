@@ -1,0 +1,51 @@
+﻿<ion-view title="Mañana">
+    <ion-nav-buttons side="right">
+        <!--<a style="color: black;" class="button button-icon icon ion-ios-trash-outline" ng-click="deleteCrew()"></a>-->
+    </ion-nav-buttons>
+    <ion-content class="padding">
+        <div class="list card">
+            <div class="item item-avatar">
+                <img src="img/meteo.png">
+                <h2>Tiempo para el día de Mañana</h2>
+                <p>{{diaManana | date:'dd-MM-yyyy'}}</p>
+            </div>
+            <div class="item item-body">
+                <div class="row">
+                    <div class="col"><img height='50' width='50' src='img/cold.png' /><span id='spanHmax'>Min. <b>{{manana.tMin}}</b> °C</span></div>
+                    <div class="col"><img height='50' width='50' src='img/hot.png' /><span id='spanHmax'>Max. <b>{{manana.tMax}}</b>  °C</span></div>
+                </div>
+            </div>
+            <div class="item item-body">
+                <h3>Descripción general</h3>
+                <h4>Castellano</h4>
+                <p>
+                    {{manana.dES}}
+                </p>
+                <h4>Euskera</h4>
+                <p>
+                    {{manana.dEU}}
+                </p>
+                <p>
+                    <!--<a href="#" class="subdued">1 Like</a>-->
+                </p>
+            </div>
+            <div class="item item-body">
+                <h3>Descripción específica</h3>
+                <h4>Castellano</h4>
+                <p>
+                    {{manana.gES}}
+                </p>
+                <h4>Euskera</h4>
+                <p>
+                    {{manana.gEU}}
+                </p>
+                <p>
+                    <!--<a href="#" class="subdued">1 Like</a>-->
+                </p>
+            </div>
+
+            
+
+        </div>
+    </ion-content>
+</ion-view>
