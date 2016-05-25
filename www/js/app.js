@@ -18,8 +18,6 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     ])
 
 .constant('config', {
-    //API_URL: 'http://10.45.1.84:8080'
-    //API_URL: 'http://api.blusecur.net'
 })
 
 .config(['$ionicConfigProvider', function($ionicConfigProvider) {
@@ -29,8 +27,8 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
 }])
 .service('activeMQ', ["$rootScope", function ($rootScope) {
     this.inicializarActiveMQ = function () {
-        var w = new Worker("js/WebWorker/activeMQ.js");
-        w.onmessage = function (event) {
+        $rootScope.w = new Worker("js/WebWorker/activeMQ.js");
+        $rootScope.w.onmessage = function (event) {
             var lines = event.data;
             var tipo = event.data[4].substring(lines[4].indexOf(":") + 1, lines[4].length);
 
