@@ -68,7 +68,7 @@
             case 2:
                 if(item.nombreParking in $rootScope.estadosParking)
                 {
-                    return "<div id='iw-container'><div class='iw-title'><b>Parking:</b> " + item.nombreParking + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b> Capacidad: </b> " + item.capacidad + "</li></ul><br><h4><b> Disponibilidad actual: </b>" + $rootScope.estadosParking[item.nombreParking] + "</h4></div><div class='iw-bottom-gradient'></div></div>";
+                    return "<div id='iw-container'><div class='iw-title'><b>Parking:</b> " + item.nombreParking + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b> Capacidad: </b> " + item.capacidad + "</li></ul><br><div class='iw-subTitle'> Disponibilidad actual: </div>" + $rootScope.estadosParking[item.nombreParking] + "</h4></div><div class='iw-bottom-gradient'></div></div>";
                 }
                 else {
                     return "<div id='iw-container'><div class='iw-title'><b>Parking:</b> " + item.nombreParking + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b> Capacidad: </b> " + item.capacidad + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
@@ -107,7 +107,7 @@
             case 11:
                 if (item.nombrePunto in $rootScope.estadosBici)
                 {
-                    return "<div id='iw-container'><div class='iw-title'><b>Punto de bicis:</b> " + item.nombrePunto + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Estado:</b> " + item.estado + "</li><li type='square'><b>Capacidad:</b> " + item.capacidad + "</li></ul><h4>Disponibilidad en Tiempo Real</h4>" + estadosBici[item.nombrePunto] + "</div><div class='iw-bottom-gradient'></div></div>";
+                    return "<div id='iw-container'><div class='iw-title'><b>Punto de bicis:</b> " + item.nombrePunto + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Estado:</b> " + item.estado + "</li><li type='square'><b>Capacidad:</b> " + item.capacidad + "</li></ul><div class='iw-subTitle'>Disponibilidad actual</div>" + $rootScope.estadosBici[item.nombrePunto] + "</div><div class='iw-bottom-gradient'></div></div>";
                 }
                 else {
                     return "<div id='iw-container'><div class='iw-title'><b>Punto de bicis:</b> " + item.nombrePunto + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Estado:</b> " + item.estado + "</li><li type='square'><b>Capacidad:</b> " + item.capacidad + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
@@ -187,6 +187,7 @@
                     case 10:
                         tranvia.push(marker);
                         infoWinTranvia.push(infowindow);
+                        break;
 
                     case 11:
                         bicis.push(marker);
@@ -279,17 +280,18 @@
 
                     case 10:
                         if (euskotren.length === 0)
-                            {
+                        {
                             obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradaseuskotren/paradaseuskotren/", 8);
-                            }
+                        }
                         break;
 
                     case 11:
-                    if(tranvia.length === 0)
-                    {
-                        obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradastranvia/paradastranvia/", 10);
-                    }
-                        
+                        if(tranvia.length === 0)
+                        {
+                            obtenerInfo("http://dev.mobility.deustotech.eu/Trip2Bilbao/api/paradastranvia/paradastranvia/", 10);
+                        }
+                        break;
+                    default:
                         break;
                 }
             
@@ -397,7 +399,8 @@
             // access properties using this keyword
             if (this.checked) {
                 // SI ESTA MARCADO
-                    for (var i = 0; i < bicis.length; i++) {
+                for (var i = 0; i < bicis.length; i++) {
+                        console.log(bicis[i]);
                         bicis[i].setMap(map);
                     }
             } else {

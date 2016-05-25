@@ -22,7 +22,11 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     //API_URL: 'http://api.blusecur.net'
 })
 
+.config(['$ionicConfigProvider', function($ionicConfigProvider) {
 
+    $ionicConfigProvider.tabs.position('bottom'); // other values: top
+
+}])
 .service('activeMQ', ["$rootScope", function ($rootScope) {
     this.inicializarActiveMQ = function () {
         var w = new Worker("js/WebWorker/activeMQ.js");
@@ -36,7 +40,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         $rootScope.meteo = [];
 
                         parser = new DOMParser();
-                        xmlDoc = parser.parseFromString(lines[9], "text/xml");
+                        xmlDoc = parser.parseFromString(lines[8], "text/xml");
                         var nombreCiudad = xmlDoc.getElementsByTagName("Nombre")[0].childNodes[0].nodeValue;
                         var descripcionGeneralHES = xmlDoc.getElementsByTagName("ES")[0].childNodes[0].nodeValue;
                         var descripcionGeneralHEU = xmlDoc.getElementsByTagName("EU")[0].childNodes[0].nodeValue;
@@ -73,6 +77,9 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                     break;
                 case "TiemposLinea":
                     if (window.DOMParser) {
+                        if ($rootScope.estadosBilbobus === undefined) {
+                            $rootScope.estadosBilbobus = {};
+                        }
                         console.log("paradas!");
                         parser = new DOMParser();
                         xmlDoc = parser.parseFromString(lines[9], "text/xml");
@@ -119,22 +126,32 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                     if (window.DOMParser) {
                         parser = new DOMParser();
                         //console.log(lines[10]);
-                        xmlDoc = parser.parseFromString(lines[10], "text/xml");
+                        xmlDoc = parser.parseFromString(lines[9], "text/xml");
                         var nombre = xmlDoc.getElementsByTagName("Nombre")[0].childNodes[0].nodeValue;
                         var disponibilidad = xmlDoc.getElementsByTagName("Disponibilidad")[0].childNodes[0].nodeValue;
+                        if ($rootScope.estadosParking === undefined)
+                        {
+                            $rootScope.estadosParking = {};
+                        }
+                        $rootScope.estadosParking[nombre] = disponibilidad;
                         //estadoParkings[nombre] = disponibilidad;
-                        //console.log(nombre + " " +disponibilidad);
+                        console.log("parking "+ nombre + " " +disponibilidad);
                     }
                     break;
 
                 case "Deusto":
                     if (window.DOMParser) {
                         parser = new DOMParser();
-                        xmlDoc = parser.parseFromString(lines[10], "text/xml");
+                        xmlDoc = parser.parseFromString(lines[9], "text/xml");
                         var general = xmlDoc.getElementsByTagName("General")[0].childNodes[0].nodeValue;
                         var dbs = xmlDoc.getElementsByTagName("Dbs")[0].childNodes[0].nodeValue;
-                        //estadoParkings["UD: DBS"] = dbs;
-                        //estadoParkings["UD: General"] = general;
+                        console.log("Deusto "+ dbs+" / "+ general);
+                        if ($rootScope.estadosParking === undefined) {
+                            $rootScope.estadosParking = {};
+                        }
+                        $rootScope.estadosParking["UD: DBS"] = dbs;
+                        $rootScope.estadosParking["UD: General"] = general;
+                        
                     }
                     break;
 
@@ -143,12 +160,16 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         //Lo convertimos mediante un parseador
                         var parser = new DOMParser();
                         //Obtenemos solo el XML
-                        var xmlDoc = parser.parseFromString(lines[10], "text/xml");
+                        var xmlDoc = parser.parseFromString(lines[9], "text/xml");
                         //Se obtienen los datos que interesan
                         var nombre = xmlDoc.getElementsByTagName("Nombre")[0].childNodes[0].nodeValue;
                         var disponibilidadbicis = xmlDoc.getElementsByTagName("BicisLibres")[0].childNodes[0].nodeValue;
                         var disponibilidadAnclajes = xmlDoc.getElementsByTagName("DisponibilidadAnclaje")[0].childNodes[0].nodeValue;
-                        //estadosBici[nombre] = "<b>Bicis Libres: </b>" + disponibilidadbicis + " / <b> Anclajes Libres: </b>" + disponibilidadAnclajes;
+                        console.log("Bicis " + disponibilidadbicis + " / " + disponibilidadAnclajes);
+                        if ($rootScope.estadosBici === undefined) {
+                            $rootScope.estadosBici = {};
+                        }
+                        $rootScope.estadosBici[nombre] = "<b>Bicis Libres: </b>" + disponibilidadbicis + " / <b> Anclajes Libres: </b>" + disponibilidadAnclajes;
                     }
                     break;
                 default:
@@ -156,11 +177,6 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
         };
         
     };
-
-}])
-.config(['$ionicConfigProvider', function($ionicConfigProvider) {
-
-    $ionicConfigProvider.tabs.position('bottom'); // other values: top
 
 }])
 
@@ -172,10 +188,19 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
             maxWidth: 200,
             showDelay: 0
         });
-    $rootScope.estadosParking = {};
-    $rootScope.estadosBilbobus = {};
-    $rootScope.estadosBici = {};
     $rootScope.meteo = [];
+    if ($rootScope.estadosBilbobus === undefined)
+    {
+        $rootScope.estadosBilbobus = {};
+    }
+    if ($rootScope.estadosBici === undefined)
+    {
+        $rootScope.estadosBici = {};
+    }
+    if ($rootScope.estadosParking === undefined)
+    {
+        $rootScope.estadosParking = {};
+    }
     $rootScope.primera = true;
     /*$rootScope.$on('$stateChangeStart', function (e, to, toParams, fromState, fromParams) {
 
@@ -188,9 +213,6 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
         }
     });*/
     //Inicializo el WebSocket al puerto e Ip del ActiveMQ. Se utilizará un servicio STOMP.
-    $rootScope.activeMQWorker = function() {
-            
-    }
     
 
     
