@@ -5,7 +5,10 @@
     $rootScope.destinoDesdeFav = null;
     $rootScope.enrutado = false;
     $rootScope.modo = "coche";
-    $rootScope.transporte = "coche";
+    if ($rootScope.transporte === undefined)
+    {
+        $rootScope.transporte = "coche";
+    }
     $rootScope.correctoFav = function (res) {
             var alertPopup = $ionicPopup.alert({
                 title: 'Favorito añadido correctamente',
@@ -152,28 +155,20 @@
         // The animation we want to use for the modal entrance
         animation: 'slide-in-up'
     });
-
+    var mapElegirFav;
     $rootScope.abrirAnadirFav = function () {
         //mostrar Modal
         $rootScope.favorito.show();
 
         //Crear mapa
         //var inticor = new google.maps.LatLng(43.262979, -2.934911);
-        var mapOptions = {
-            zoom: 10,
-            center: $rootScope.posActual,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-        };
-        if ($rootScope.mapElegirFav === undefined)
-        {
-            //console.log("Primera");
-            $rootScope.mapElegirFav = new google.maps.Map(document.getElementById('favorito'), mapOptions);
-        }
-        else
-        {
-            $rootScope.mapElegirFav.setCenter($rootScope.posActual);
-            $rootScope.mapElegirFav.setZoom(10);
-        }
+        //console.log("Primera");
+            var mapOptions = {
+                zoom: 10,
+                center: new google.maps.LatLng(43.262980, -2.934883),
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+            };
+            mapElegirFav = new google.maps.Map(document.getElementById('favorito'), mapOptions);
     }
     var marker;
     $rootScope.puntoAAnadir = "";
@@ -192,7 +187,7 @@
 
                 var bounds = new google.maps.LatLngBounds();
                 marker = new google.maps.Marker({
-                    map: $rootScope.mapElegirFav,
+                    map: mapElegirFav,
                     animation: google.maps.Animation.DROP,
                     title: punto,
                     position: puntoLocalizacion
@@ -200,8 +195,8 @@
 
                 bounds.extend(puntoLocalizacion);
                 $rootScope.puntoAAnadir = puntoLocalizacion;
-                $rootScope.mapElegirFav.setCenter(puntoLocalizacion);
-                $rootScope.mapElegirFav.setZoom(15);
+                mapElegirFav.setCenter(puntoLocalizacion);
+                mapElegirFav.setZoom(15);
             } else {
                 alert("No se pudo obtener el punto exacto por: " + status);
             }
@@ -233,7 +228,7 @@
                                     '<div class="iw-subTitle">Información</div>' +
                                     '<ul><li><b>Posición: </b><ul><li>Latitud: ' + $rootScope.puntoAAnadir.lat() + '</li><li>Longitud:' + $rootScope.puntoAAnadir.lng() + '</li></ul></li><li><b>Modo de transporte: ' + transporte + '</b></li></ul>' +
                                 '<button ng-click="eliminarFav(' + $rootScope.puntoAAnadir.lat() + ',' + $rootScope.puntoAAnadir.lng() + ', true, ' + $rootScope.marcadoresFavoritos.length + ')">Eliminar favorito</button>' +
-                                '<button ng-click="buscarRutaAqui(' + $rootScope.puntoAAnadir.lat() + ',' + $rootScope.puntoAAnadir.lng() + ',&quot;' + $rootScope.puntoAAnadir.modoTransporte + '&quot;)">Ir aquí</button>' +
+                                '<button ng-click="buscarRutaAqui(' + $rootScope.puntoAAnadir.lat() + ',' + $rootScope.puntoAAnadir.lng() + ',&quot;' + transporte + '&quot;)">Ir aquí</button>' +
                                 '</div>' +
                                 '<div class="iw-bottom-gradient"></div>' +
                                 '</div>';

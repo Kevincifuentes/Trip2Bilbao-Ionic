@@ -1,4 +1,8 @@
-﻿.img-responsive{
+﻿.card-blue .item{
+  background: #5cacee;
+}
+
+.img-responsive{
 max-width: 100%;
 height: auto;
 }

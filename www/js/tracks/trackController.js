@@ -2,6 +2,7 @@
 
 .controller('TrackMapCtrl', function ($scope, $rootScope, $compile, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $cordovaNetwork) {
         console.log("primera vez");
+
         //Inicializar mapa
         var inticor = new google.maps.LatLng(43.262979, -2.934911);
         var mapOptions = {
@@ -1530,7 +1531,8 @@
                     return "<div id='iw-container'><div class='iw-title'><b>Parada de Tranvía:</b> " + item.nombreParada + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Localización:</b> " + item.descripcion + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";
                 case 11:
                     if (item.nombrePunto in $rootScope.estadosBici) {
-                        return "<div id='iw-container'><div class='iw-title'><b>Punto de bicis:</b> " + item.nombrePunto + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Estado:</b> " + item.estado + "</li><li type='square'><b>Capacidad:</b> " + item.capacidad + "</li></ul><h4>Disponibilidad en Tiempo Real</h4>" + estadosBici[item.nombrePunto] + "</div><div class='iw-bottom-gradient'></div></div>";
+                        return "<div id='iw-container'><div class='iw-title'><b>Punto de bicis:</b> " + item.nombrePunto + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Estado:</b> " + item.estado + "</li><li type='square'><b>Capacidad:</b> " + item.capacidad + "</li></ul><h4>Disponibilidad en Tiempo Real</h4>" + $rootScope.
+                            estadosBici[item.nombrePunto] + "</div><div class='iw-bottom-gradient'></div></div>";
                     }
                     else {
                         return "<div id='iw-container'><div class='iw-title'><b>Punto de bicis:</b> " + item.nombrePunto + "</div><div class='iw-content'><div class='iw-subTitle'>Información</div><ul><li type='square'><b>Estado:</b> " + item.estado + "</li><li type='square'><b>Capacidad:</b> " + item.capacidad + "</li></ul></div><div class='iw-bottom-gradient'></div></div>";

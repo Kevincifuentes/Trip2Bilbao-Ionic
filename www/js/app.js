@@ -8,6 +8,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     'trip2bilbao.track.controllers',
     'trip2bilbao.mapa.controllers',
     'trip2bilbao.favoritos.controllers',
+    'trip2bilbao.informacion.controllers',
     'trip2bilbao.navigation.controllers',
     'trip2bilbao.meteo.controllers',
     'trip2bilbao.directives',
@@ -70,7 +71,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         $rootScope.meteo.push(hoy);
                         $rootScope.meteo.push(manana);
                         $rootScope.meteo.push(pasado);
-
+                        $rootScope.$apply();
                     }
                     break;
                 case "TiemposLinea":
@@ -118,6 +119,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                                 
                             }
                         }
+                        $rootScope.$apply();
                     }
                     break;
                 case "Parkings":
@@ -134,6 +136,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         $rootScope.estadosParking[nombre] = disponibilidad;
                         //estadoParkings[nombre] = disponibilidad;
                         console.log("parking "+ nombre + " " +disponibilidad);
+                        $rootScope.$apply();
                     }
                     break;
 
@@ -149,6 +152,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         }
                         $rootScope.estadosParking["UD: DBS"] = dbs;
                         $rootScope.estadosParking["UD: General"] = general;
+                        $rootScope.$apply();
                         
                     }
                     break;
@@ -168,7 +172,8 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                             $rootScope.estadosBici = {};
                         }
                         $rootScope.estadosBici[nombre] = "<b>Bicis Libres: </b>" + disponibilidadbicis + " / <b> Anclajes Libres: </b>" + disponibilidadAnclajes;
-                    }
+                        $rootScope.$apply();
+                   }
                     break;
                 default:
             }
@@ -252,7 +257,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
 
     .state('menu.home', {
         url: '/home',
-        cache: true,
+        cache: false,
         views: {
             'menuContent': {
                 templateUrl: 'templates/home/home.html',
@@ -381,6 +386,18 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
         views: {
             'contact-tab': {
                 templateUrl: "templates/meteo/contact.html"
+            }
+        }
+    })
+    .state('menu.informacion', {
+        url: "/informacion",
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/informacion/informacion.html',
+                controller: 'InformacionCtrl',
+                data: {
+                    requiresLogin: false
+                }
             }
         }
     });

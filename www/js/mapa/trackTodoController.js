@@ -4,6 +4,7 @@
 
     $ionicLoading.show({
         content: 'Cargando...',
+        template: '<ion-spinner class="light"></ion-spinner><br><h3>Descargando datos</h3><br><span>Esto puede tardar unos segundos<span>',
         animation: 'fade-in',
         showBackdrop: true,
         maxWidth: 200,
@@ -294,7 +295,6 @@
                     default:
                         break;
                 }
-            
         });
     };
 
@@ -402,7 +402,8 @@
                 for (var i = 0; i < bicis.length; i++) {
                         console.log(bicis[i]);
                         bicis[i].setMap(map);
-                    }
+                }
+
             } else {
                 // SI NO ESTA MARCADO
                 for (var i = 0; i < bicis.length; i++) {

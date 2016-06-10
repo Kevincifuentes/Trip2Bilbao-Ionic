@@ -324,8 +324,8 @@
     });
 
     var watchOptions = {
-        timeout: 1000,
-        //enableHighAccuracy: true, // may cause errors if true
+        timeout: 3000,
+        enableHighAccuracy: true, // may cause errors if true
         maximumAge: 600000
     };
     function onSuccess(heading) {
