@@ -2,7 +2,7 @@
 
 .controller('NavigationCtrl', function ($scope, $rootScope, $compile, $timeout, $interval, $ionicPopup, $state, $stateParams, $filter, $translate, jwtHelper, $ionicModal, uiGmapGoogleMapApi, $http, $cordovaNetwork, $cordovaGeolocation, $compile) {
     
-    console.log($rootScope.origenEnrutado+" "+$rootScope.parkingEnrutado+ " "+ $rootScope.destinoEnrutado+ " "+ $rootScope.modo+ " "+ $rootScope.modoSegundo);
+    //console.log($rootScope.origenEnrutado+" "+$rootScope.parkingEnrutado+ " "+ $rootScope.destinoEnrutado+ " "+ $rootScope.modo+ " "+ $rootScope.modoSegundo);
     var origen = $rootScope.posActual;
     var destino = $rootScope.destinoEnrutado;
     var modo = $rootScope.modo;
@@ -63,7 +63,7 @@
                 icon: 'img/user.png',
                 title: data.location.description
             });
-            console.log("2 "+head);
+            //console.log("2 "+head);
             panorama.setPano(data.location.pano);
             panorama.setPov({
                 heading: head,
@@ -109,7 +109,7 @@
         boton.appendChild(compiled[0]);
         boton.onclick = function () {
             //si se ha realizado una ruta, ejecutar play. Si no nada.
-            console.log("Pause");
+            //console.log("Pause");
             if(funcionando === true)
             {
                 funcionando = false;
@@ -139,7 +139,7 @@
                 function (position) {
                     var lat = position.coords.latitude;
                     var long = position.coords.longitude;
-                    console.log("Posición actual: " + lat + " / " + long);
+                    //console.log("Posición actual: " + lat + " / " + long);
                     $scope.sv.getPanorama({ location: new google.maps.LatLng(lat, long), radius: 50 }, processSVData);
                 });
                 document.getElementById("botonParado").className = "button button-icon ion-pause ion-navicon";
@@ -214,9 +214,9 @@
             }
             
             directionsService.route(request, function (response, status) {
-                console.log(status);
+                //console.log(status);
                 if (status == google.maps.DirectionsStatus.OK) {
-                    console.log("Ruta correcta");
+                    //console.log("Ruta correcta");
                     directionsDisplay.setDirections(response);
                 }
             });
@@ -319,13 +319,15 @@
             screen.lockOrientation('portrait');
             window.plugins.insomnia.allowSleepAgain();
             screen.unlockOrientation();
-            AndroidFullScreen.showSystemUI(function(){}, function(err){console.log("Error: "+err);});
+            AndroidFullScreen.showSystemUI(function () { }, function (err) { console.log("Error: " + err); });
+            watch.clearWatch();
+            navigator.compass.clearWatch(watchID);
         }
     });
 
     var watchOptions = {
-        timeout: 3000,
-        enableHighAccuracy: true, // may cause errors if true
+        timeout: 1000,
+        //enableHighAccuracy: true, // may cause errors if true
         maximumAge: 600000
     };
     function onSuccess(heading) {
@@ -384,7 +386,7 @@
               }
               map.setCenter(origen);
           }
-          console.log("Posición actual: " + lat + " / " + long);
+          //console.log("Posición actual: " + lat + " / " + long);
           $scope.sv.getPanorama({ location: origen, radius: 50 }, processSVData);
       });
 

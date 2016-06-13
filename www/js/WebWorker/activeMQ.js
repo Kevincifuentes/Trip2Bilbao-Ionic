@@ -2,7 +2,6 @@
 
 //Notificar para la conexión
 ws.onopen = function () {
-    var seconds = new Date().getTime() / 1000;
     ws.send('CONNECT\n\n\0');
 
     //Notificar que nos suscribimos y a que nos suscribimos
@@ -12,6 +11,7 @@ ws.onopen = function () {
 ws.onmessage = function (e) {
 
     if (e.data.startsWith('MESSAGE')) {
+        console.log("Recibo");
         var lines = e.data.split('\n');
         postMessage(lines);
     }

@@ -1648,6 +1648,8 @@
 
         $rootScope.buscarRutaAqui = function(latitud, longitud, modo)
         {
+            console.log("MOOOODDO "+modo);
+            resetearMarcadores();
             $rootScope.anteriorModo = $rootScope.modo;
             $rootScope.modo = modo;
             if (document.getElementById('myRadioId1'))

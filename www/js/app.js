@@ -65,9 +65,9 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         var hoy = { gES: descripcionGeneralHES, gEU: descripcionGeneralHEU, dES: descripcionHES, dEU: descripcionHEU, tMax: tempMaxH, tMin: tempMinH };
                         var manana = { gES: descripcionGeneralMES, gEU: descripcionGeneralMEU, dES: descripcionMES, dEU: descripcionMEU, tMax: tempMaxM, tMin: tempMinM };
                         var pasado = { gES: descripcionGeneralPES, gEU: descripcionGeneralPEU, dES: descripcionPES, dEU: descripcionPEU, tMax: tempMaxP, tMin: tempMinP };
-                        console.log(hoy);
-                        console.log(manana);
-                        console.log(pasado);
+                        //console.log(hoy);
+                        //console.log(manana);
+                        //console.log(pasado);
                         $rootScope.meteo.push(hoy);
                         $rootScope.meteo.push(manana);
                         $rootScope.meteo.push(pasado);
@@ -79,7 +79,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         if ($rootScope.estadosBilbobus === undefined) {
                             $rootScope.estadosBilbobus = {};
                         }
-                        console.log("paradas!");
+                        //console.log("paradas!");
                         parser = new DOMParser();
                         xmlDoc = parser.parseFromString(lines[9], "text/xml");
                         //console.log(lines[9]);
@@ -135,7 +135,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         }
                         $rootScope.estadosParking[nombre] = disponibilidad;
                         //estadoParkings[nombre] = disponibilidad;
-                        console.log("parking "+ nombre + " " +disponibilidad);
+                        //console.log("parking "+ nombre + " " +disponibilidad);
                         $rootScope.$apply();
                     }
                     break;
@@ -146,7 +146,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         xmlDoc = parser.parseFromString(lines[9], "text/xml");
                         var general = xmlDoc.getElementsByTagName("General")[0].childNodes[0].nodeValue;
                         var dbs = xmlDoc.getElementsByTagName("Dbs")[0].childNodes[0].nodeValue;
-                        console.log("Deusto "+ dbs+" / "+ general);
+                        //console.log("Deusto "+ dbs+" / "+ general);
                         if ($rootScope.estadosParking === undefined) {
                             $rootScope.estadosParking = {};
                         }
@@ -167,7 +167,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
                         var nombre = xmlDoc.getElementsByTagName("Nombre")[0].childNodes[0].nodeValue;
                         var disponibilidadbicis = xmlDoc.getElementsByTagName("BicisLibres")[0].childNodes[0].nodeValue;
                         var disponibilidadAnclajes = xmlDoc.getElementsByTagName("DisponibilidadAnclaje")[0].childNodes[0].nodeValue;
-                        console.log("Bicis " + disponibilidadbicis + " / " + disponibilidadAnclajes);
+                        //console.log("Bicis " + disponibilidadbicis + " / " + disponibilidadAnclajes);
                         if ($rootScope.estadosBici === undefined) {
                             $rootScope.estadosBici = {};
                         }
@@ -328,6 +328,7 @@ angular.module('starter', ['ionic', 'pascalprecht.translate', "angular-jwt",
     })
     .state('menu.tabs', {
         url: "/tab",
+        cache: false,
         abstract : true,
         views: {
             'menuContent': {
